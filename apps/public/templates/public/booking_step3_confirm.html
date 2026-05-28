@@ -1,0 +1,96 @@
+{% extends 'public/base_public.html' %}
+{% load static %}
+
+{% block title %}Confirma tu cita — Diana Nails{% endblock %}
+
+{% block step_indicator %}
+<div class="step-indicator">
+  <div class="step-item">
+    <div class="step-number done">✓</div>
+    <span class="step-label done">Servicio</span>
+    <div class="step-connector done"></div>
+  </div>
+  <div class="step-item">
+    <div class="step-number done">✓</div>
+    <span class="step-label done">Horario</span>
+    <div class="step-connector done"></div>
+  </div>
+  <div class="step-item">
+    <div class="step-number active">3</div>
+    <span class="step-label active">Confirmar</span>
+  </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="booking-card">
+  <h5 class="fw-semibold mb-1">Confirma tus datos</h5>
+  <p class="text-muted small mb-4">Ingresa tus datos para confirmar la cita</p>
+
+  <div class="summary-box mb-4">
+    <div class="row g-3">
+      <div class="col-6">
+        <small class="text-muted d-block">Servicio</small>
+        <strong>{{ service.name }}</strong>
+      </div>
+      <div class="col-3">
+        <small class="text-muted d-block">Duración</small>
+        <strong>{{ service.duration_minutes }} min</strong>
+      </div>
+      <div class="col-3">
+        <small class="text-muted d-block">Precio</small>
+        <strong style="color: var(--pink-dark);">${{ service.price|floatformat:0 }}</strong>
+      </div>
+      <div class="col-6">
+        <small class="text-muted d-block">Fecha</small>
+        <strong>{{ date }}</strong>
+      </div>
+      <div class="col-6">
+        <small class="text-muted d-block">Hora</small>
+        <strong>{{ time }}</strong>
+      </div>
+    </div>
+  </div>
+
+  <form method="post" novalidate>
+    {% csrf_token %}
+
+    <div class="mb-3">
+      <label class="form-label fw-medium">{{ form.first_name.label }}</label>
+      {{ form.first_name }}
+      {% for error in form.first_name.errors %}
+        <div class="text-danger small mt-1">{{ error }}</div>
+      {% endfor %}
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label fw-medium">{{ form.last_name.label }}</label>
+      {{ form.last_name }}
+      {% for error in form.last_name.errors %}
+        <div class="text-danger small mt-1">{{ error }}</div>
+      {% endfor %}
+    </div>
+
+    <div class="mb-4">
+      <label class="form-label fw-medium">{{ form.phone.label }}</label>
+      {{ form.phone }}
+      {% if form.phone.help_text %}
+        <div class="form-text small">{{ form.phone.help_text }}</div>
+      {% endif %}
+      {% for error in form.phone.errors %}
+        <div class="text-danger small mt-1">{{ error }}</div>
+      {% endfor %}
+    </div>
+
+    <button type="submit" class="btn btn-primary-custom w-100">
+      <i class="bi bi-check-lg me-1"></i> Confirmar cita
+    </button>
+  </form>
+
+  <div class="mt-3 text-center">
+    <a href="{% url 'public:step1' %}" class="text-muted small text-decoration-none">
+      <i class="bi bi-arrow-left me-1"></i> Volver al inicio
+    </a>
+  </div>
+</div>
+{% endblock %}

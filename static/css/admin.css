@@ -1,0 +1,261 @@
+/* ==========================================================================
+   Diana Nails — Admin Form Styles (Unfold override)
+   ========================================================================== */
+
+/* --- Form container: limit width + center --- */
+#content form {
+  max-width: 900px;
+}
+
+/* --- Module fieldsets as cards --- */
+#content .module {
+  margin-bottom: 1.5rem;
+}
+
+#content .module h2 {
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.75rem 1.25rem;
+  margin: 0;
+  border-bottom: 1px solid var(--border-color, rgba(0,0,0,0.06));
+}
+
+/* --- Form rows: compact grid --- */
+#content .form-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 0.75rem 1.25rem;
+  border-bottom: 1px solid var(--border-color, rgba(0,0,0,0.04));
+  align-items: flex-start;
+}
+
+#content .form-row:last-child {
+  border-bottom: none;
+}
+
+/* --- Field boxes: 2-column layout --- */
+#content .field-box {
+  flex: 1 1 calc(50% - 0.5rem);
+  min-width: 200px;
+}
+
+#content .field-box.field-box-full {
+  flex: 1 1 100%;
+}
+
+/* --- Labels: compact --- */
+#content .form-row label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  display: block;
+  margin-bottom: 0.25rem;
+  color: var(--color-base-700, #555);
+}
+
+/* --- Inputs: compact + modern --- */
+#content .form-row input,
+#content .form-row select,
+#content .form-row textarea {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.85rem;
+  border-radius: 0.375rem;
+  border: 1px solid var(--border-color, #E0DCE2);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  background: var(--color-base-50, #fff);
+}
+
+#content .form-row input:focus,
+#content .form-row select:focus,
+#content .form-row textarea:focus {
+  border-color: var(--primary, #1A1A1A);
+  box-shadow: 0 0 0 2px rgba(0,0,0,0.06);
+  outline: none;
+}
+
+/* --- Textarea: controlled height --- */
+#content .form-row textarea {
+  min-height: 80px;
+  max-height: 160px;
+  resize: vertical;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+/* --- Help text: subtle --- */
+#content .form-row .help {
+  font-size: 0.72rem;
+  color: var(--color-base-400, #999);
+  margin-top: 0.2rem;
+}
+
+/* --- Errors: compact --- */
+#content .form-row .errors {
+  background: none;
+  padding: 0;
+  margin: 0.25rem 0 0;
+  font-size: 0.78rem;
+}
+
+#content .form-row .errorlist {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+#content .form-row .errorlist li {
+  color: #dc3545;
+  font-size: 0.78rem;
+  padding: 0.15rem 0;
+}
+
+/* --- Inline fields in same row --- */
+.field-box.field-box-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.field-box.field-box-inline label {
+  white-space: nowrap;
+  margin-bottom: 0;
+}
+
+/* --- Readonly fields --- */
+#content .form-row .readonly {
+  padding: 0.5rem 0;
+  font-size: 0.88rem;
+  color: var(--color-base-800, #333);
+  font-weight: 500;
+}
+
+/* --- Checkbox/boolean fields --- */
+#content .form-row input[type="checkbox"] {
+  width: auto;
+  margin-right: 0.5rem;
+}
+
+/* --- URL field --- */
+#content .form-row input[type="url"] {
+  font-family: 'Inter', monospace;
+  font-size: 0.82rem;
+}
+
+/* --- Filters (horizontal) --- */
+#changelist-filter {
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+/* --- Submit row --- */
+.submit-row {
+  display: flex;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  align-items: center;
+  flex-wrap: wrap;
+  border-top: 1px solid var(--border-color, rgba(0,0,0,0.06));
+  margin-top: 0;
+}
+
+.submit-row input,
+.submit-row a,
+.submit-row button {
+  padding: 0.5rem 1.25rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  border-radius: 0.375rem;
+  transition: all 0.15s ease;
+}
+
+.submit-row input[type="submit"] {
+  background: var(--primary, #1A1A1A);
+  color: #fff;
+  border: 1px solid var(--primary, #1A1A1A);
+}
+
+.submit-row input[type="submit"]:hover {
+  background: #333;
+  border-color: #333;
+}
+
+.submit-row input[type="submit"].default {
+  background: var(--primary, #1A1A1A);
+}
+
+.submit-row a.deletelink {
+  background: #dc3545;
+  color: #fff;
+  border: 1px solid #dc3545;
+  text-decoration: none;
+  padding: 0.5rem 1.25rem;
+  border-radius: 0.375rem;
+}
+
+.submit-row a.deletelink:hover {
+  background: #c82333;
+}
+
+/* --- Calendar widget --- */
+.calendarbox {
+  border-radius: 0.5rem;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+}
+
+.calendarbox table {
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+/* --- Responsive: single column on small screens --- */
+@media (max-width: 768px) {
+  #content .field-box {
+    flex: 1 1 100%;
+    min-width: 0;
+  }
+
+  #content form {
+    max-width: 100%;
+  }
+
+  #content .form-row {
+    padding: 0.6rem 1rem;
+  }
+
+  .submit-row {
+    flex-direction: column;
+  }
+
+  .submit-row input,
+  .submit-row a,
+  .submit-row button {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+/* --- Dark mode overrides (Unfold dark theme) --- */
+@media (prefers-color-scheme: dark) {
+  #content .form-row label {
+    color: var(--color-base-300, #ccc);
+  }
+
+  #content .form-row input,
+  #content .form-row select,
+  #content .form-row textarea {
+    background: var(--color-base-800, #2D2D2D);
+    color: var(--color-base-100, #eee);
+    border-color: var(--color-base-700, #444);
+  }
+
+  #content .form-row .help {
+    color: var(--color-base-400, #888);
+  }
+
+  #content .form-row .readonly {
+    color: var(--color-base-200, #ddd);
+  }
+}

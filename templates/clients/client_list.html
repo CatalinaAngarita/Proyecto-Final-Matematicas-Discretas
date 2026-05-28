@@ -1,0 +1,328 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Clientas — {{ system_name }}{% endblock %}
+{% block page_title %}Clientas{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* Mobile-friendly cards for clients */
+  .clients-mobile-list {
+    display: none;
+  }
+
+  .client-card {
+    background: white;
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 12px rgba(139, 94, 131, 0.08);
+    border: 2px solid #F5E6F0;
+    transition: all 0.3s ease;
+  }
+
+  .client-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(139, 94, 131, 0.15);
+    border-color: #E8D5E0;
+  }
+
+  .client-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #F5E6F0;
+  }
+
+  .client-name {
+    font-weight: 600;
+    font-size: 1.05rem;
+    color: #4A3A4A;
+    margin: 0;
+  }
+
+  .client-status-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .client-status-badge.active {
+    background: #E8F5E8;
+    color: #5A8B52;
+  }
+
+  .client-status-badge.inactive {
+    background: #F5E6F0;
+    color: #8B7A8B;
+  }
+
+  .client-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .client-info-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .client-info-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #F5E6F0 0%, #E8D5E0 100%);
+    color: #8B5E83;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+    flex-shrink: 0;
+  }
+
+  .client-info-content {
+    flex: 1;
+  }
+
+  .client-info-label {
+    font-size: 0.75rem;
+    color: #8B7A8B;
+    font-weight: 500;
+    margin-bottom: 2px;
+  }
+
+  .client-info-value {
+    font-size: 0.95rem;
+    color: #4A3A4A;
+    font-weight: 500;
+  }
+
+  .client-card-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #F5E6F0;
+  }
+
+  .client-action-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border-radius: 12px;
+    border: 2px solid #F5E6F0;
+    background: white;
+    color: #4A3A4A;
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    min-height: 44px;
+  }
+
+  .client-action-btn:hover {
+    background: #F5E6F0;
+    border-color: #E8D5E0;
+    transform: translateY(-1px);
+  }
+
+  .client-action-btn.primary {
+    background: linear-gradient(135deg, #8B5E83 0%, #A67C52 100%);
+    color: white;
+    border-color: transparent;
+  }
+
+  .client-action-btn.primary:hover {
+    background: linear-gradient(135deg, #A67C52 0%, #8B5E83 100%);
+    color: white;
+  }
+
+  .client-action-btn.danger {
+    border-color: #FEE8E8;
+    color: #E84A4A;
+  }
+
+  .client-action-btn.danger:hover {
+    background: #FEE8E8;
+    color: #E84A4A;
+  }
+
+  @media (max-width: 768px) {
+    .clients-desktop-table {
+      display: none !important;
+    }
+
+    .clients-mobile-list {
+      display: block !important;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+
+{% include 'components/page_header.html' with title='Clientas' subtitle='Gestión de clientas registradas' add_url='clients:create' add_label='Nueva clienta' %}
+
+<!-- Desktop Table View -->
+<div class="card clients-desktop-table">
+  <div class="card-body p-0">
+    <div class="table-container">
+      <table class="table table-hover mb-0">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Teléfono</th>
+            <th>Email</th>
+            <th>Visitas</th>
+            <th>Última visita</th>
+            <th class="text-center">Activa</th>
+            <th class="text-end">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for client in clients %}
+            <tr>
+              <td>
+                <span class="fw-medium">{{ client.get_full_name }}</span>
+              </td>
+              <td>{{ client.phone }}</td>
+              <td>{{ client.email|default:'—' }}</td>
+              <td>{{ client.total_visits }}</td>
+              <td>{{ client.last_visit_date|date:'d/m/Y'|default:'—' }}</td>
+              <td class="text-center">
+                {% if client.is_active %}
+                  <span class="badge bg-success-subtle text-success-emphasis">Activa</span>
+                {% else %}
+                  <span class="badge bg-secondary-subtle text-secondary-emphasis">Inactiva</span>
+                {% endif %}
+              </td>
+              <td class="text-end">
+                <div class="table-actions justify-content-end">
+                  <a href="{% url 'clients:update' client.pk %}" class="action-icon" data-bs-toggle="tooltip" title="Editar">
+                    <i class="bi bi-pencil"></i>
+                  </a>
+                  <a href="#" class="action-icon danger" data-bs-toggle="tooltip" title="Eliminar"
+                     data-confirm-delete="{% url 'clients:delete' client.pk %}"
+                     data-message="¿Eliminar a <strong>{{ client.get_full_name }}</strong> y todo su historial?">
+                    <i class="bi bi-trash"></i>
+                  </a>
+                </div>
+              </td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="7">
+                <div class="empty-state">
+                  <i class="bi bi-people"></i>
+                  <h5>No hay clientas registradas</h5>
+                  <p>Comienza agregando la primera clienta al sistema.</p>
+                  <a href="{% url 'clients:create' %}" class="btn btn-primary">
+                    <i class="bi bi-plus-lg me-1"></i>Nueva clienta
+                  </a>
+                </div>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Mobile Card View -->
+<div class="clients-mobile-list">
+  {% for client in clients %}
+    <div class="client-card">
+      <div class="client-card-header">
+        <h4 class="client-name">{{ client.get_full_name }}</h4>
+        <span class="client-status-badge {% if client.is_active %}active{% else %}inactive{% endif %}">
+          {% if client.is_active %}Activa{% else %}Inactiva{% endif %}
+        </span>
+      </div>
+
+      <div class="client-card-body">
+        <div class="client-info-row">
+          <div class="client-info-icon">
+            <i class="bi bi-telephone"></i>
+          </div>
+          <div class="client-info-content">
+            <div class="client-info-label">Teléfono</div>
+            <div class="client-info-value">{{ client.phone }}</div>
+          </div>
+        </div>
+
+        {% if client.email %}
+        <div class="client-info-row">
+          <div class="client-info-icon">
+            <i class="bi bi-envelope"></i>
+          </div>
+          <div class="client-info-content">
+            <div class="client-info-label">Email</div>
+            <div class="client-info-value">{{ client.email }}</div>
+          </div>
+        </div>
+        {% endif %}
+
+        <div class="client-info-row">
+          <div class="client-info-icon">
+            <i class="bi bi-calendar-check"></i>
+          </div>
+          <div class="client-info-content">
+            <div class="client-info-label">Total visitas</div>
+            <div class="client-info-value">{{ client.total_visits }} visita{{ client.total_visits|pluralize }}</div>
+          </div>
+        </div>
+
+        {% if client.last_visit_date %}
+        <div class="client-info-row">
+          <div class="client-info-icon">
+            <i class="bi bi-clock-history"></i>
+          </div>
+          <div class="client-info-content">
+            <div class="client-info-label">Última visita</div>
+            <div class="client-info-value">{{ client.last_visit_date|date:'d/m/Y' }}</div>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+
+      <div class="client-card-actions">
+        <a href="{% url 'clients:update' client.pk %}" class="client-action-btn primary">
+          <i class="bi bi-pencil"></i>
+          Editar
+        </a>
+        <a href="#"
+           class="client-action-btn danger"
+           data-confirm-delete="{% url 'clients:delete' client.pk %}"
+           data-message="¿Eliminar a <strong>{{ client.get_full_name }}</strong> y todo su historial?">
+          <i class="bi bi-trash"></i>
+          Eliminar
+        </a>
+      </div>
+    </div>
+  {% empty %}
+    <div class="card">
+      <div class="card-body text-center py-5">
+        <i class="bi bi-people" style="font-size: 3rem; color: #E8D5E0; margin-bottom: 16px;"></i>
+        <h5 style="color: #4A3A4A; margin-bottom: 8px;">No hay clientas registradas</h5>
+        <p style="color: #8B7A8B; margin-bottom: 20px;">Comienza agregando la primera clienta al sistema.</p>
+        <a href="{% url 'clients:create' %}" class="btn btn-primary">
+          <i class="bi bi-plus-lg me-1"></i>Nueva clienta
+        </a>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+
+{% include 'components/pagination.html' %}
+{% include 'components/modal_confirm.html' %}
+{% endblock %}

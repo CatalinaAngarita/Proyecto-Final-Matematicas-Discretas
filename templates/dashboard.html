@@ -1,0 +1,574 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Bienvenida, Diana — {{ system_name }}{% endblock %}
+{% block page_title %}Hola, Diana 👋{% endblock %}
+
+{% block extra_css %}
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    /* Estilos personalizados para el dashboard de Diana - Morado y Crema */
+    .welcome-card {
+      background: linear-gradient(135deg, #996998 0%, #7A4F79 100%);
+      color: white;
+      border-radius: 24px;
+      padding: 32px;
+      margin-bottom: 24px;
+      box-shadow: 0 8px 30px rgba(153, 105, 152, 0.3);
+    }
+
+    .welcome-card h2 {
+      font-size: 2rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .welcome-card p {
+      font-size: 1.1rem;
+      opacity: 0.95;
+      margin-bottom: 0;
+    }
+
+    .welcome-icon {
+      font-size: 3rem;
+      opacity: 0.8;
+    }
+
+    .diana-stat-card {
+      background: white;
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 4px 20px rgba(153, 105, 152, 0.1);
+      transition: all 0.3s ease;
+      border: 2px solid #f4e8f3;
+    }
+
+    .diana-stat-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 30px rgba(153, 105, 152, 0.2);
+      border-color: #C9A3C9;
+    }
+
+    .diana-stat-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      margin-bottom: 16px;
+    }
+
+    .diana-stat-icon.rose {
+      background: linear-gradient(135deg, #f4e8f3 0%, #E6D0E6 100%);
+      color: #996998;
+    }
+
+    .diana-stat-icon.green {
+      background: linear-gradient(135deg, #D1FAE5 0%, #10B981 100%);
+      color: #047857;
+    }
+
+    .diana-stat-icon.blue {
+      background: linear-gradient(135deg, #f4e8f3 0%, #E6D0E6 100%);
+      color: #996998;
+    }
+
+    .diana-stat-icon.orange {
+      background: linear-gradient(135deg, #FEE2E2 0%, #EF4444 100%);
+      color: #B91C1C;
+    }
+
+    .diana-stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #1F2937;
+      margin-bottom: 4px;
+    }
+
+    .diana-stat-label {
+      font-size: 0.9rem;
+      color: #6B7280;
+      font-weight: 500;
+    }
+
+    .diana-quick-action {
+      background: white;
+      border: 2px solid #f4e8f3;
+      border-radius: 16px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      text-decoration: none;
+      color: #1F2937;
+      transition: all 0.3s ease;
+      margin-bottom: 12px;
+    }
+
+    .diana-quick-action:hover {
+      background: #f4e8f3;
+      border-color: #C9A3C9;
+      transform: translateX(4px);
+    }
+
+    .diana-quick-action-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #f4e8f3 0%, #E6D0E6 100%);
+      color: #996998;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+
+    .diana-quick-action-text {
+      flex: 1;
+      font-weight: 500;
+      font-size: 1rem;
+    }
+
+    .diana-quick-action-arrow {
+      color: #996998;
+      font-size: 1.2rem;
+    }
+
+    .diana-chart-card {
+      background: white;
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 4px 20px rgba(153, 105, 152, 0.1);
+      border: 2px solid #f4e8f3;
+    }
+
+    .diana-appointments-card {
+      background: white;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(153, 105, 152, 0.1);
+      border: 2px solid #f4e8f3;
+    }
+
+    .diana-appointments-header {
+      background: linear-gradient(135deg, #f4e8f3 0%, #E6D0E6 100%);
+      padding: 20px 24px;
+      border-bottom: 2px solid #C9A3C9;
+    }
+
+    .diana-appointments-table {
+      margin: 0;
+    }
+
+    .diana-appointments-table thead th {
+      background: #FDF8F3;
+      color: #6B7280;
+      font-weight: 600;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border: none;
+      padding: 16px 24px;
+    }
+
+    .diana-appointments-table tbody tr {
+      border-bottom: 1px solid #E9D5FF;
+      transition: background 0.2s ease;
+    }
+
+    .diana-appointments-table tbody tr:hover {
+      background: #FDF8F3;
+    }
+
+    .diana-appointments-table td {
+      padding: 16px 24px;
+      vertical-align: middle;
+    }
+
+    .diana-badge {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .diana-badge.pending {
+      background: #f4e8f3;
+      color: #996998;
+    }
+
+    .diana-badge.confirmed {
+      background: #D1FAE5;
+      color: #047857;
+    }
+
+    .diana-badge.completed {
+      background: #D1FAE5;
+      color: #047857;
+    }
+
+    .diana-btn-primary {
+      background: linear-gradient(135deg, #996998 0%, #7A4F79 100%);
+      color: white;
+      border: none;
+      border-radius: 14px;
+      padding: 12px 24px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .diana-btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(153, 105, 152, 0.4);
+      color: white;
+    }
+
+    @media (max-width: 768px) {
+      .welcome-card {
+        padding: 20px;
+        border-radius: 16px;
+        margin-bottom: 16px;
+      }
+
+      .welcome-card h2 {
+        font-size: 1.3rem;
+      }
+
+      .welcome-card p {
+        font-size: 0.85rem;
+        line-height: 1.4;
+      }
+
+      /* Fix card grid - ensure equal widths */
+      .row.g-3 > .col-6 {
+        flex: 0 0 calc(50% - 12px);
+        max-width: calc(50% - 12px);
+      }
+
+      .diana-stat-card {
+        padding: 16px;
+        margin-bottom: 12px;
+        min-height: 110px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      .diana-stat-icon {
+        width: 44px;
+        height: 44px;
+        font-size: 1.2rem;
+        margin-bottom: 12px;
+      }
+
+      .diana-stat-value {
+        font-size: 1.5rem;
+      }
+
+      .diana-stat-label {
+        font-size: 0.75rem;
+        line-height: 1.2;
+      }
+
+      .diana-chart-card {
+        padding: 16px;
+        margin-bottom: 16px;
+      }
+
+      .diana-quick-action {
+        padding: 16px;
+        margin-bottom: 10px;
+        min-height: 56px; /* Larger touch target */
+      }
+
+      .diana-quick-action-icon {
+        width: 44px;
+        height: 44px;
+        font-size: 1.3rem;
+      }
+
+      .diana-quick-action-text {
+        font-size: 0.95rem;
+      }
+
+      .diana-appointments-card {
+        border-radius: 16px;
+      }
+
+      .diana-appointments-header {
+        padding: 16px;
+      }
+
+      .diana-appointments-table {
+        font-size: 0.85rem;
+      }
+
+      .diana-appointments-table th,
+      .diana-appointments-table td {
+        padding: 12px 16px;
+      }
+
+      .btn-sm {
+        font-size: 0.8rem;
+        padding: 8px 12px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .welcome-card {
+        padding: 16px;
+      }
+
+      .welcome-card h2 {
+        font-size: 1.2rem;
+        margin-bottom: 6px;
+      }
+
+      .welcome-card p {
+        font-size: 0.8rem;
+        line-height: 1.4;
+        max-width: 100%;
+        word-wrap: break-word;
+      }
+
+      /* Stack everything in single column for very small screens */
+      .row.g-3 > .col-6 {
+        flex: 0 0 100%;
+        max-width: 100%;
+      }
+
+      .diana-stat-card {
+        padding: 14px;
+        margin-bottom: 10px;
+        min-height: 100px;
+      }
+
+      .diana-stat-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1.1rem;
+        margin-bottom: 10px;
+      }
+
+      .diana-stat-value {
+        font-size: 1.4rem;
+      }
+
+      .diana-stat-label {
+        font-size: 0.7rem;
+      }
+
+      .diana-quick-action {
+        padding: 14px;
+        min-height: 52px;
+      }
+
+      .diana-quick-action-icon {
+        width: 42px;
+        height: 42px;
+        font-size: 1.2rem;
+      }
+
+      .diana-quick-action-text {
+        font-size: 0.9rem;
+      }
+
+      .diana-appointments-table th,
+      .diana-appointments-table td {
+        padding: 8px 12px;
+        font-size: 0.75rem;
+      }
+
+      /* Hide less important columns on very small screens */
+      .diana-appointments-table th:nth-child(2),
+      .diana-appointments-table td:nth-child(2) {
+        display: none;
+      }
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+
+<!-- Tarjeta de bienvenida -->
+<div class="welcome-card">
+  <div class="row align-items-center">
+    <div class="col-md-8">
+      <h2>¡Hola, Diana! 💅</h2>
+      <p style="max-width: 100%; overflow-wrap: break-word;">Bienvenida a tu panel de gestión. Aquí está todo lo que necesitas para tu negocio.</p>
+    </div>
+    <div class="col-md-4 text-center text-md-end d-none d-md-block">
+      <i class="bi bi-heart-fill welcome-icon"></i>
+    </div>
+  </div>
+</div>
+
+<!-- Estadísticas principales -->
+<div class="row g-3 mb-4">
+  <div class="col-6 col-md-3 d-flex">
+    <div class="diana-stat-card w-100">
+      <div class="diana-stat-icon rose">
+        <i class="bi bi-calendar-heart"></i>
+      </div>
+      <div class="diana-stat-value">--</div>
+      <div class="diana-stat-label">Citas hoy</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3 d-flex">
+    <div class="diana-stat-card w-100">
+      <div class="diana-stat-icon green">
+        <i class="bi bi-people-fill"></i>
+      </div>
+      <div class="diana-stat-value">--</div>
+      <div class="diana-stat-label">Clientas</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3 d-flex">
+    <div class="diana-stat-card w-100">
+      <div class="diana-stat-icon rose">
+        <i class="bi bi-gem-fill"></i>
+      </div>
+      <div class="diana-stat-value">--</div>
+      <div class="diana-stat-label">Servicios</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3 d-flex">
+    <div class="diana-stat-card w-100" style="border: 2px solid #FEE8E8;">
+      <div class="diana-stat-icon" style="background: linear-gradient(135deg, #FEE8E8 0%, #FDD4D4 100%); color: #E84A4A;">
+        <i class="bi bi-x-circle-fill"></i>
+      </div>
+      <div class="diana-stat-value" style="color: #E84A4A;">--%</div>
+      <div class="diana-stat-label">Cancelaciones</div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3 mb-4">
+  <!-- Acciones rápidas -->
+  <div class="col-md-4 order-2 order-md-1">
+    <div class="diana-chart-card">
+      <h5 class="mb-3" style="color: #4A3A4A; font-weight: 600;">
+        <i class="bi bi-lightning-fill me-2" style="color: #A67C52;"></i>
+        Acciones rápidas
+      </h5>
+      <a href="{% url 'clients:create' %}" class="diana-quick-action">
+        <div class="diana-quick-action-icon">
+          <i class="bi bi-person-plus-fill"></i>
+        </div>
+        <div class="diana-quick-action-text">Nueva clienta</div>
+        <div class="diana-quick-action-arrow">
+          <i class="bi bi-chevron-right"></i>
+        </div>
+      </a>
+      <a href="{% url 'services:create' %}" class="diana-quick-action">
+        <div class="diana-quick-action-icon">
+          <i class="bi bi-plus-circle-fill"></i>
+        </div>
+        <div class="diana-quick-action-text">Nuevo servicio</div>
+        <div class="diana-quick-action-arrow">
+          <i class="bi bi-chevron-right"></i>
+        </div>
+      </a>
+      <a href="{% url 'schedules:work_create' %}" class="diana-quick-action">
+        <div class="diana-quick-action-icon">
+          <i class="bi bi-clock-fill"></i>
+        </div>
+        <div class="diana-quick-action-text">Configurar horario laboral</div>
+        <div class="diana-quick-action-arrow">
+          <i class="bi bi-chevron-right"></i>
+        </div>
+      </a>
+      <a href="{% url 'schedules:break_create' %}" class="diana-quick-action">
+        <div class="diana-quick-action-icon">
+          <i class="bi bi-cup-hot-fill"></i>
+        </div>
+        <div class="diana-quick-action-text">Nuevo descanso</div>
+        <div class="diana-quick-action-arrow">
+          <i class="bi bi-chevron-right"></i>
+        </div>
+      </a>
+      <a href="{% url 'schedules:day_off_create' %}" class="diana-quick-action">
+        <div class="diana-quick-action-icon">
+          <i class="bi bi-calendar-x-fill"></i>
+        </div>
+        <div class="diana-quick-action-text">Nuevo día libre</div>
+        <div class="diana-quick-action-arrow">
+          <i class="bi bi-chevron-right"></i>
+        </div>
+      </a>
+      <a href="{% url 'analytics:dashboard' %}" class="diana-quick-action">
+        <div class="diana-quick-action-icon">
+          <i class="bi bi-graph-up-arrow"></i>
+        </div>
+        <div class="diana-quick-action-text">Ver estadísticas</div>
+        <div class="diana-quick-action-arrow">
+          <i class="bi bi-chevron-right"></i>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <!-- Gráfico de actividad -->
+  <div class="col-md-8 order-1 order-md-2">
+    <div class="diana-chart-card">
+      <h5 class="mb-3" style="color: #4A3A4A; font-weight: 600;">
+        <i class="bi bi-calendar-week me-2" style="color: #8B5E83;"></i>
+        Tu actividad esta semana
+      </h5>
+      <div style="height: 220px;">
+        <canvas id="weeklyChart"
+          data-labels='["Lun","Mar","Mié","Jue","Vie","Sáb"]'
+          data-values='[0,0,0,0,0,0]'>
+        </canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Próximas citas -->
+<div class="diana-appointments-card">
+  <div class="diana-appointments-header d-flex justify-content-between align-items-center flex-wrap">
+    <h5 class="mb-2 mb-md-0" style="color: #4A3A4A; font-weight: 600;">
+      <i class="bi bi-calendar-check me-2" style="color: #8B5E83;"></i>
+      Tus próximas citas
+    </h5>
+    <a href="{% url 'appointments:list' %}" class="btn btn-sm diana-btn-primary">
+      Ver todas <i class="bi bi-arrow-right ms-1"></i>
+    </a>
+  </div>
+  <div class="table-responsive">
+    <table class="table diana-appointments-table mb-0">
+      <thead>
+        <tr>
+          <th>Clienta</th>
+          <th>Servicio</th>
+          <th>Fecha</th>
+          <th>Hora</th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td colspan="5" class="text-center text-muted py-4">
+            <div class="d-flex flex-column align-items-center">
+              <i class="bi bi-calendar-x" style="font-size: 2rem; color: #E8D5E0; margin-bottom: 12px;"></i>
+              <span style="color: #8B7A8B;">No tienes citas programadas</span>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+  <script src="{% static 'js/dashboard.js' %}"></script>
+{% endblock %}

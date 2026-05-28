@@ -1,0 +1,344 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Servicios — {{ system_name }}{% endblock %}
+{% block page_title %}Servicios{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* Mobile-friendly cards for services */
+  .services-mobile-list {
+    display: none;
+  }
+
+  .service-card {
+    background: white;
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 12px rgba(139, 94, 131, 0.08);
+    border: 2px solid #F5E6F0;
+    transition: all 0.3s ease;
+  }
+
+  .service-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(139, 94, 131, 0.15);
+    border-color: #E8D5E0;
+  }
+
+  .service-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #F5E6F0;
+  }
+
+  .service-name {
+    font-weight: 600;
+    font-size: 1.05rem;
+    color: #4A3A4A;
+    margin: 0;
+    flex: 1;
+  }
+
+  .service-status-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    flex-shrink: 0;
+  }
+
+  .service-status-badge.active {
+    background: #E8F5E8;
+    color: #5A8B52;
+  }
+
+  .service-status-badge.inactive {
+    background: #F5E6F0;
+    color: #8B7A8B;
+  }
+
+  .service-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .service-info-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .service-info-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #F5E6F0 0%, #E8D5E0 100%);
+    color: #8B5E83;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+    flex-shrink: 0;
+  }
+
+  .service-info-content {
+    flex: 1;
+  }
+
+  .service-info-label {
+    font-size: 0.75rem;
+    color: #8B7A8B;
+    font-weight: 500;
+    margin-bottom: 2px;
+  }
+
+  .service-info-value {
+    font-size: 0.95rem;
+    color: #4A3A4A;
+    font-weight: 500;
+  }
+
+  .service-category-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    background: #F5E6F0;
+    color: #8B5E83;
+  }
+
+  .service-price {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    background: linear-gradient(135deg, #8B5E83 0%, #A67C52 100%);
+    color: white;
+  }
+
+  .service-card-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #F5E6F0;
+  }
+
+  .service-action-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border-radius: 12px;
+    border: 2px solid #F5E6F0;
+    background: white;
+    color: #4A3A4A;
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    min-height: 44px;
+  }
+
+  .service-action-btn:hover {
+    background: #F5E6F0;
+    border-color: #E8D5E0;
+    transform: translateY(-1px);
+  }
+
+  .service-action-btn.primary {
+    background: linear-gradient(135deg, #8B5E83 0%, #A67C52 100%);
+    color: white;
+    border-color: transparent;
+  }
+
+  .service-action-btn.primary:hover {
+    background: linear-gradient(135deg, #A67C52 0%, #8B5E83 100%);
+    color: white;
+  }
+
+  .service-action-btn.danger {
+    border-color: #FEE8E8;
+    color: #E84A4A;
+  }
+
+  .service-action-btn.danger:hover {
+    background: #FEE8E8;
+    color: #E84A4A;
+  }
+
+  @media (max-width: 768px) {
+    .services-desktop-table {
+      display: none !important;
+    }
+
+    .services-mobile-list {
+      display: block !important;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+
+{% include 'components/page_header.html' with title='Servicios' subtitle='Catálogo completo de servicios del spa' add_url='services:create' add_label='Nuevo servicio' %}
+
+<div class="d-flex gap-2 mb-3">
+  <a href="{% url 'services:category_list' %}" class="btn btn-outline-secondary btn-sm">
+    <i class="bi bi-tags me-1"></i>Categorías
+  </a>
+  <a href="{% url 'services:nail_types_list' %}" class="btn btn-outline-secondary btn-sm">
+    <i class="bi bi-palette me-1"></i>Tipos de uñas
+  </a>
+</div>
+
+<!-- Desktop Table View -->
+<div class="card services-desktop-table">
+  <div class="card-body p-0">
+    <div class="table-container">
+      <table class="table table-hover mb-0">
+        <thead>
+          <tr>
+            <th>Servicio</th>
+            <th>Categoría</th>
+            <th>Duración</th>
+            <th>Precio</th>
+            <th class="text-center">Estado</th>
+            <th class="text-end">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for service in services %}
+            <tr>
+              <td class="fw-medium">{{ service.name }}</td>
+              <td><span class="badge bg-secondary-subtle text-secondary-emphasis">{{ service.get_category_display }}</span></td>
+              <td>{{ service.duration_minutes }} min</td>
+              <td><span class="fw-semibold">${{ service.price|floatformat:0 }}</span></td>
+              <td class="text-center">
+                {% if service.is_active %}
+                  <span class="badge bg-success-subtle text-success-emphasis">Activo</span>
+                {% else %}
+                  <span class="badge bg-secondary-subtle text-secondary-emphasis">Inactivo</span>
+                {% endif %}
+              </td>
+              <td class="text-end">
+                <div class="table-actions justify-content-end">
+                  <a href="{% url 'services:update' service.pk %}" class="action-icon" title="Editar">
+                    <i class="bi bi-pencil"></i>
+                  </a>
+                  <a href="#" class="action-icon danger" title="Eliminar"
+                     data-confirm-delete="{% url 'services:delete' service.pk %}"
+                     data-message="¿Eliminar el servicio <strong>{{ service.name }}</strong>?">
+                    <i class="bi bi-trash"></i>
+                  </a>
+                </div>
+              </td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="6">
+                <div class="empty-state">
+                  <i class="bi bi-gear-wide-connected"></i>
+                  <h5>No hay servicios registrados</h5>
+                  <p>Agrega los servicios que ofrece el spa.</p>
+                  <a href="{% url 'services:create' %}" class="btn btn-primary">
+                    <i class="bi bi-plus-lg me-1"></i>Nuevo servicio
+                  </a>
+                </div>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Mobile Card View -->
+<div class="services-mobile-list">
+  {% for service in services %}
+    <div class="service-card">
+      <div class="service-card-header">
+        <h4 class="service-name">{{ service.name }}</h4>
+        <span class="service-status-badge {% if service.is_active %}active{% else %}inactive{% endif %}">
+          {% if service.is_active %}Activo{% else %}Inactivo{% endif %}
+        </span>
+      </div>
+
+      <div class="service-card-body">
+        <div class="service-info-row">
+          <div class="service-info-icon">
+            <i class="bi bi-tags"></i>
+          </div>
+          <div class="service-info-content">
+            <div class="service-info-label">Categoría</div>
+            <div class="service-info-value">
+              <span class="service-category-badge">{{ service.get_category_display }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="service-info-row">
+          <div class="service-info-icon">
+            <i class="bi bi-clock"></i>
+          </div>
+          <div class="service-info-content">
+            <div class="service-info-label">Duración</div>
+            <div class="service-info-value">{{ service.duration_minutes }} minutos</div>
+          </div>
+        </div>
+
+        <div class="service-info-row">
+          <div class="service-info-icon">
+            <i class="bi bi-currency-dollar"></i>
+          </div>
+          <div class="service-info-content">
+            <div class="service-info-label">Precio</div>
+            <div class="service-info-value">
+              <span class="service-price">${{ service.price|floatformat:0 }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="service-card-actions">
+        <a href="{% url 'services:update' service.pk %}" class="service-action-btn primary">
+          <i class="bi bi-pencil"></i>
+          Editar
+        </a>
+        <a href="#"
+           class="service-action-btn danger"
+           data-confirm-delete="{% url 'services:delete' service.pk %}"
+           data-message="¿Eliminar el servicio <strong>{{ service.name }}</strong>?">
+          <i class="bi bi-trash"></i>
+          Eliminar
+        </a>
+      </div>
+    </div>
+  {% empty %}
+    <div class="card">
+      <div class="card-body text-center py-5">
+        <i class="bi bi-gear-wide-connected" style="font-size: 3rem; color: #E8D5E0; margin-bottom: 16px;"></i>
+        <h5 style="color: #4A3A4A; margin-bottom: 8px;">No hay servicios registrados</h5>
+        <p style="color: #8B7A8B; margin-bottom: 20px;">Agrega los servicios que ofrece el spa.</p>
+        <a href="{% url 'services:create' %}" class="btn btn-primary">
+          <i class="bi bi-plus-lg me-1"></i>Nuevo servicio
+        </a>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+
+{% include 'components/modal_confirm.html' %}
+{% endblock %}

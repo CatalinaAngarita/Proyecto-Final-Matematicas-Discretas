@@ -1,0 +1,12 @@
+<nav class="breadcrumb-wrapper" aria-label="breadcrumb">
+  <ol class="breadcrumb-custom">
+    <li><a href="{% url 'core:dashboard' %}"><i class="bi bi-house"></i></a></li>
+    {% for crumb in breadcrumbs %}
+      <li>
+        {% if crumb.url %}<a href="{{ crumb.url }}">{% endif %}
+          {{ crumb.label }}
+        {% if crumb.url %}</a>{% endif %}
+      </li>
+    {% endfor %}
+  </ol>
+</nav>

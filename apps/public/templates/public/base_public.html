@@ -1,0 +1,531 @@
+{% load static %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Diana Nails — Agenda tu cita{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@400;450;500;600&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #1A1A1A;
+      --primary-light: #F5F0EB;
+      --cream: #FDF8F3;
+      --cream-dark: #F5F0EB;
+      --dark: #1A1A1A;
+      --text-muted: #8A7E7E;
+      --border-light: #EDE8E4;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--cream);
+      color: var(--dark);
+      min-height: 100vh;
+    }
+    .brand-font {
+      font-family: 'Playfair Display', serif;
+    }
+
+    /* --- Page layout --- */
+    .page-wrap {
+      max-width: 840px;
+      margin: 0 auto;
+      padding: 0 1.25rem;
+    }
+    .main-container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* --- Mini header (default for step2/3/success) --- */
+    .mini-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.85rem;
+      padding: 1.75rem 0 0.5rem;
+    }
+    .mini-logo {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+      flex-shrink: 0;
+    }
+    .mini-brand {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.25rem;
+      color: var(--dark);
+      line-height: 1.2;
+    }
+    .mini-tagline {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    /* --- Hero (landing page) --- */
+    .hero-section {
+      text-align: center;
+      padding: 3.5rem 0 1.5rem;
+    }
+    .hero-logo {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.10);
+      margin-bottom: 1.25rem;
+    }
+    .hero-section h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.6rem;
+      color: var(--dark);
+      line-height: 1.15;
+      margin-bottom: 0.5rem;
+    }
+    .hero-section .tagline {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      max-width: 440px;
+      margin: 0 auto 1.75rem;
+      line-height: 1.6;
+    }
+
+    /* --- Section titles --- */
+    .section-title {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .section-title h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      color: var(--dark);
+      margin-bottom: 0.35rem;
+    }
+    .section-title p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin: 0;
+    }
+
+    /* --- Step indicator --- */
+    .step-indicator {
+      display: flex;
+      justify-content: center;
+      gap: 0;
+      margin-bottom: 2.5rem;
+    }
+    .step-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .step-number {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.3s;
+    }
+    .step-number.active { background: var(--dark); color: #fff; }
+    .step-number.done { background: #2D2D2D; color: #fff; }
+    .step-number.inactive { background: #E8E0E0; color: var(--text-muted); }
+    .step-label { font-size: 0.85rem; color: var(--text-muted); }
+    .step-label.active { color: var(--dark); font-weight: 600; }
+    .step-connector {
+      width: 40px; height: 2px;
+      background: #E8E0E0; margin: 0 0.5rem;
+    }
+    .step-connector.done { background: #2D2D2D; }
+
+    /* --- Booking card --- */
+    .booking-card {
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+      padding: 2.5rem;
+      max-width: 580px;
+      margin: 0 auto;
+    }
+    .btn-primary-custom {
+      background: var(--dark);
+      border: none;
+      color: #fff;
+      padding: 0.75rem 2rem;
+      border-radius: 12px;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+    .btn-primary-custom:hover {
+      background: #333;
+      color: #fff;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    .btn-outline-custom {
+      border: 2px solid var(--dark);
+      color: var(--dark);
+      border-radius: 12px;
+      font-weight: 500;
+      padding: 0.75rem 2rem;
+      transition: all 0.2s;
+    }
+    .btn-outline-custom:hover {
+      background: var(--primary-light);
+      color: var(--dark);
+    }
+    .btn-scroll {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--dark);
+      color: #fff;
+      border: none;
+      padding: 0.85rem 2.25rem;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: all 0.25s;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .btn-scroll:hover {
+      background: #333;
+      color: #fff;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    }
+
+    /* --- Category tabs --- */
+    .category-tabs {
+      display: flex;
+      gap: 0.5rem;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      padding: 0.25rem;
+    }
+    .category-tabs::-webkit-scrollbar { display: none; }
+    .category-tab {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.55rem 1rem;
+      border: 1.5px solid var(--border-light);
+      border-radius: 12px;
+      background: #fff;
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .category-tab:hover { border-color: #D0C8C0; color: var(--dark); }
+    .category-tab.active { color: #fff; border-color: transparent; }
+    .category-tab-nail.active { background: #1A1A1A; }
+    .category-tab-eyebrow.active { background: #5A4A42; }
+    .category-tab-lash.active { background: #7A5A5A; }
+    .category-tab-waxing.active { background: #8A7A72; }
+    .category-tab-other.active { background: #B0A8A0; }
+    .tab-icon { display: inline-flex; align-items: center; justify-content: center; font-size: 1rem; }
+    .tab-icon i { color: var(--text-muted); transition: color 0.2s; }
+    .category-tab.active .tab-icon i { color: #fff; }
+    .tab-label { font-size: 0.82rem; }
+
+    /* --- Service panels --- */
+    .service-panel { display: none; animation: panelFadeIn 0.25s ease; }
+    .service-panel.active { display: block; }
+    @keyframes panelFadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .service-grid { display: flex; flex-direction: column; gap: 0.625rem; }
+
+    /* --- Service cards --- */
+    .service-card {
+      background: #fff; border: 1.5px solid var(--border-light);
+      border-radius: 14px; cursor: pointer; transition: all 0.2s ease;
+      overflow: hidden; position: relative;
+    }
+    .service-card:hover {
+      border-color: #D0C8C0; background: #FDFAF8;
+      transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+    }
+    .service-card.selected {
+      border-color: var(--dark); background: #FAF7F4;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+    .service-card-body { display: flex; align-items: center; gap: 1rem; padding: 1rem 1.25rem; }
+    .service-card-icon {
+      width: 40px; height: 40px; border-radius: 10px;
+      background: var(--cream); display: flex; align-items: center;
+      justify-content: center; font-size: 1.15rem; color: var(--dark);
+      flex-shrink: 0; transition: all 0.2s;
+    }
+    .service-card.selected .service-card-icon { background: var(--dark); color: #fff; }
+    .service-card-info { flex: 1; min-width: 0; }
+    .service-card-name { font-size: 0.92rem; font-weight: 600; color: var(--dark); line-height: 1.3; }
+    .service-card-meta {
+      font-size: 0.78rem; color: var(--text-muted); margin-top: 0.15rem;
+      display: flex; align-items: center; gap: 0.35rem; flex-wrap: wrap;
+    }
+    .meta-divider { color: #D0C8C0; }
+    .meta-price { font-weight: 600; color: var(--dark); }
+    .service-card-check {
+      font-size: 1.25rem; color: transparent; transition: all 0.2s; flex-shrink: 0;
+    }
+    .service-card.selected .service-card-check { color: var(--dark); }
+    .service-card-desc {
+      font-size: 0.78rem; color: var(--text-muted);
+      padding: 0 1.25rem 0.75rem; line-height: 1.4;
+      border-top: 1px solid #F0EAE6; margin: 0 0.75rem; padding-top: 0.6rem;
+    }
+
+    /* --- Time slot --- */
+    .time-slot-btn {
+      border: 2px solid #F0E8E8; border-radius: 12px; padding: 0.75rem 1rem;
+      text-align: center; cursor: pointer; transition: all 0.2s; font-weight: 500;
+    }
+    .time-slot-btn:hover { border-color: var(--dark); background: var(--cream); }
+    .time-slot-btn.selected { border-color: var(--dark); background: var(--dark); color: #fff; }
+    .form-control, .form-select {
+      border-radius: 12px; border: 2px solid #F0E8E8; padding: 0.75rem 1rem;
+    }
+    .form-control:focus, .form-select:focus {
+      border-color: var(--dark); box-shadow: 0 0 0 3px rgba(0,0,0,0.08);
+    }
+
+    /* --- Success --- */
+    .success-icon {
+      width: 80px; height: 80px; border-radius: 50%;
+      background: #F0F0F0; display: flex; align-items: center;
+      justify-content: center; margin: 0 auto 1.5rem;
+    }
+    .success-icon i { font-size: 2.5rem; color: #2D2D2D; }
+
+    /* --- Features section --- */
+    .features-section {
+      padding: 3rem 0 1rem;
+    }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.25rem;
+      max-width: 780px;
+      margin: 0 auto;
+    }
+    .feature-card {
+      background: #fff;
+      border: 1.5px solid var(--border-light);
+      border-radius: 16px;
+      padding: 1.75rem 1.5rem;
+      text-align: center;
+      transition: all 0.2s;
+    }
+    .feature-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+    }
+    .feature-icon {
+      width: 48px; height: 48px;
+      border-radius: 12px;
+      background: var(--cream);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 1rem;
+      font-size: 1.3rem;
+      color: var(--dark);
+    }
+    .feature-card h6 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+    }
+    .feature-card p {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin: 0;
+      line-height: 1.5;
+    }
+
+    /* --- Testimonials --- */
+    .testimonials-section {
+      padding: 3rem 0 2rem;
+      max-width: 780px;
+      margin: 0 auto;
+    }
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    .testimonial-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-light);
+      border-radius: 12px;
+      padding: 1.25rem 1.25rem 1rem;
+      display: flex;
+      flex-direction: column;
+      transition: box-shadow 0.25s ease;
+    }
+    .testimonial-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.06); }
+    .testimonial-stars {
+      margin-bottom: 0.5rem;
+      color: #f5b342;
+      font-size: 0.9rem;
+    }
+    .testimonial-content {
+      font-size: 0.88rem;
+      line-height: 1.55;
+      color: var(--text-muted);
+      flex: 1;
+      margin-bottom: 0.6rem;
+      font-style: italic;
+    }
+    .testimonial-author {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-dark);
+    }
+
+    /* --- Footer --- */
+    footer.public-footer {
+      background: #fff;
+      border-top: 1px solid var(--border-light);
+      padding: 3rem 1rem 2rem;
+      margin-top: 3rem;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 2rem;
+      max-width: 780px;
+      margin: 0 auto 2rem;
+    }
+    .footer-col h6 {
+      font-size: 0.82rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+    }
+    .footer-col p {
+      font-size: 0.88rem;
+      color: var(--dark);
+      margin-bottom: 0.35rem;
+      line-height: 1.5;
+    }
+    .footer-col a {
+      color: var(--dark);
+      text-decoration: none;
+    }
+    .footer-col a:hover { text-decoration: underline; }
+    .footer-bottom {
+      text-align: center;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border-light);
+      max-width: 780px;
+      margin: 0 auto;
+    }
+
+    /* --- Responsive: mobile --- */
+    @media (max-width: 576px) {
+      .page-wrap { padding: 0 1rem; }
+      .hero-section { padding: 2.5rem 0 1rem; }
+      .hero-section h1 { font-size: 2rem; }
+      .hero-section .tagline { font-size: 1rem; }
+      .hero-logo { width: 80px; height: 80px; }
+      .booking-card { padding: 1.5rem; }
+      .footer-grid { grid-template-columns: 1fr; text-align: center; gap: 1.5rem; }
+      footer.public-footer { padding: 2rem 0 1.5rem; margin-top: 2rem; }
+      .features-grid { grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+      .feature-card { padding: 1.25rem 1rem; }
+      .testimonials-grid { grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+      .section-title h2 { font-size: 1.4rem; }
+    }
+
+    @media (max-width: 400px) {
+      .features-grid { grid-template-columns: 1fr; }
+      .testimonials-grid { grid-template-columns: 1fr; }
+      .category-tab { padding: 0.45rem 0.75rem; font-size: 0.78rem; }
+      .service-card-body { padding: 0.75rem 1rem; gap: 0.75rem; }
+      .service-card-icon { width: 34px; height: 34px; font-size: 1rem; }
+      .service-card-name { font-size: 0.85rem; }
+    }
+  </style>
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+  <div class="page-wrap">
+
+    {% block hero_section %}
+    <div class="mini-header">
+      <img src="{% static 'img/logo.png' %}" alt="Diana Nails" class="mini-logo">
+      <div>
+        <div class="mini-brand">Diana Nails</div>
+        <div class="mini-tagline">Agenda tu cita</div>
+      </div>
+    </div>
+    {% endblock %}
+
+    <div class="main-container">
+      {% block step_indicator %}{% endblock %}
+
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show py-2 small" role="alert">
+            <i class="bi bi-info-circle me-1"></i>{{ message }}
+            <button type="button" class="btn-close py-2" data-bs-dismiss="alert"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+
+      {% block content %}{% endblock %}
+    </div>
+
+    {% block features_section %}{% endblock %}
+
+    {% block testimonials_section %}{% endblock %}
+
+    <footer class="public-footer">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h6>Diana Nails</h6>
+          <p>Tu espacio de belleza y cuidado personal. Profesionalismo, calidad y calidez en cada servicio.</p>
+        </div>
+        <div class="footer-col">
+          <h6>Horarios</h6>
+          <p>Lun — Sáb: 8:00 AM — 8:00 PM</p>
+        </div>
+        <div class="footer-col">
+          <h6>Contacto</h6>
+          <p><i class="bi bi-whatsapp me-1"></i> +57 300 123 4567</p>
+          <p><i class="bi bi-instagram me-1"></i> @diananails</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        Diana Nails &copy; 2026 &mdash; Hecho con <i class="bi bi-heart-fill" style="color: var(--dark);"></i> para nuestras clientas
+      </div>
+    </footer>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

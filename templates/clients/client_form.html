@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{% if object %}Editar{% else %}Nueva{% endif %} clienta — {{ system_name }}{% endblock %}
+{% block page_title %}{% if object %}Editar{% else %}Nueva{% endif %} clienta{% endblock %}
+
+{% block content %}
+
+{% include 'components/page_header.html' with title=title subtitle='Completa los datos de la clienta' %}
+
+<div class="card">
+  <div class="card-body">
+    <form method="post" novalidate>
+      {% csrf_token %}
+
+      {% if form.errors %}
+        <div class="alert alert-danger py-2 small">
+          <i class="bi bi-exclamation-circle me-1"></i>Corrige los errores antes de guardar.
+        </div>
+      {% endif %}
+
+      <div class="row g-3">
+        {% for field in form %}
+          <div class="col-md-6">
+            <label class="form-label">{{ field.label }}</label>
+            {{ field }}
+            {% for error in field.errors %}
+              <div class="text-danger small mt-1">{{ error }}</div>
+            {% endfor %}
+          </div>
+        {% endfor %}
+      </div>
+
+      <div class="mt-4 d-flex gap-2">
+        <button type="submit" class="btn btn-primary">
+          <i class="bi bi-check-lg me-1"></i>{% if object %}Guardar cambios{% else %}Crear clienta{% endif %}
+        </button>
+        <a href="{% url 'clients:list' %}" class="btn btn-light">Cancelar</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock %}

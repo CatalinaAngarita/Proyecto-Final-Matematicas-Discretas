@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Cita #{{ appointment.id|truncatechars:8 }} — {{ system_name }}{% endblock %}
+{% block page_title %}Detalle de cita{% endblock %}
+
+{% block content %}
+
+<nav class="breadcrumb-wrapper">
+  <ol class="breadcrumb-custom">
+    <li><a href="{% url 'core:dashboard' %}"><i class="bi bi-house"></i></a></li>
+    <li><a href="{% url 'appointments:list' %}">Citas</a></li>
+    <li class="active">Cita #{{ appointment.id|truncatechars:8 }}</li>
+  </ol>
+</nav>
+
+<div class="row g-3">
+  <div class="col-lg-8">
+    <div class="card">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <span><i class="bi bi-info-circle me-2"></i>Información de la cita</span>
+        <span class="badge status-{{ appointment.status }} fs-6">{{ appointment.get_status_display }}</span>
+      </div>
+      <div class="card-body">
+        <div class="row g-4">
+          <div class="col-sm-6">
+            <div class="mb-3">
+              <small class="text-muted d-block mb-1">Clienta</small>
+              <span class="fw-medium fs-5">{{ appointment.client.get_full_name }}</span><br>
+              <small class="text-muted">{{ appointment.client.phone }}</small>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="mb-3">
+              <small class="text-muted d-block mb-1">Especialista</small>
+              <span class="fw-medium">{{ appointment.specialist.get_full_name }}</span>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="mb-3">
+              <small class="text-muted d-block mb-1">Servicio</small>
+              <span class="fw-medium">{{ appointment.service.name }}</span><br>
+              <small class="text-muted">{{ appointment.service.duration_minutes }} min — ${{ appointment.service.price|floatformat:0 }}</small>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="mb-3">
+              <small class="text-muted d-block mb-1">Tipo de aplicación</small>
+              <span>{{ appointment.nail_application_type|default:'—' }}</span>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="mb-3">
+              <small class="text-muted d-block mb-1">Fecha</small>
+              <span class="fw-medium">{{ appointment.date|date:'l, d F Y' }}</span>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="mb-3">
+              <small class="text-muted d-block mb-1">Horario</small>
+              <span class="fw-medium">{{ appointment.start_time|time:'H:i' }} — {{ appointment.end_time|time:'H:i' }}</span>
+            </div>
+          </div>
+          <div class="col-12">
+            <div class="mb-3">
+              <small class="text-muted d-block mb-1">Notas</small>
+              <p class="mb-0">{{ appointment.notes|default:'Sin notas' }}</p>
+            </div>
+          </div>
+          <div class="col-12">
+            <hr>
+            <div class="row text-muted small">
+              <div class="col-auto">Creada: {{ appointment.created_at|date:'d/m/Y H:i' }}</div>
+              <div class="col-auto">Actualizada: {{ appointment.updated_at|date:'d/m/Y H:i' }}</div>
+              {% if appointment.confirmed_at %}
+                <div class="col-auto">Confirmada: {{ appointment.confirmed_at|date:'d/m/Y H:i' }}</div>
+              {% endif %}
+              {% if appointment.completed_at %}
+                <div class="col-auto">Completada: {{ appointment.completed_at|date:'d/m/Y H:i' }}</div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    <div class="card">
+      <div class="card-header"><i class="bi bi-lightning me-2"></i>Acciones</div>
+      <div class="card-body d-grid gap-2">
+        <a href="{% url 'appointments:update' appointment.pk %}" class="btn btn-primary">
+          <i class="bi bi-pencil me-1"></i>Editar cita
+        </a>
+        <a href="{% url 'appointments:cancel' appointment.pk %}" class="btn btn-warning">
+          <i class="bi bi-x-circle me-1"></i>Cancelar cita
+        </a>
+        <a href="{% url 'appointments:delete' appointment.pk %}" class="btn btn-outline-danger">
+          <i class="bi bi-trash me-1"></i>Eliminar
+        </a>
+        <a href="{% url 'appointments:list' %}" class="btn btn-light">
+          <i class="bi bi-arrow-left me-1"></i>Volver
+        </a>
+      </div>
+    </div>
+
+    {% if appointment.cancelled_at %}
+      <div class="card border-danger mt-3">
+        <div class="card-header bg-danger text-white"><i class="bi bi-exclamation-triangle me-2"></i>Cancelación</div>
+        <div class="card-body small">
+          <p><strong>Cancelada:</strong> {{ appointment.cancelled_at|date:'d/m/Y H:i' }}</p>
+          <p><strong>Por clienta:</strong> {{ appointment.is_cancelled_by_client|yesno:'Sí,No' }}</p>
+          <p><strong>Motivo:</strong> {{ appointment.cancellation_reason|default:'No especificado' }}</p>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %}

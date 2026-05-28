@@ -1,0 +1,322 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Especialistas — {{ system_name }}{% endblock %}
+{% block page_title %}Especialistas{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* Mobile-friendly cards for specialists */
+  .specialists-mobile-list {
+    display: none;
+  }
+
+  .specialist-card {
+    background: white;
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 12px rgba(139, 94, 131, 0.08);
+    border: 2px solid #F5E6F0;
+    transition: all 0.3s ease;
+  }
+
+  .specialist-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(139, 94, 131, 0.15);
+    border-color: #E8D5E0;
+  }
+
+  .specialist-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #F5E6F0;
+  }
+
+  .specialist-name {
+    font-weight: 600;
+    font-size: 1.05rem;
+    color: #4A3A4A;
+    margin: 0;
+    flex: 1;
+  }
+
+  .specialist-badges {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  .specialist-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .specialist-badge.primary {
+    background: linear-gradient(135deg, #E8C35E 0%, #D4B04E 100%);
+    color: #5C4A00;
+  }
+
+  .specialist-badge.active {
+    background: #E8F5E8;
+    color: #5A8B52;
+  }
+
+  .specialist-badge.inactive {
+    background: #F5E6F0;
+    color: #8B7A8B;
+  }
+
+  .specialist-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .specialist-info-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .specialist-info-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #F5E6F0 0%, #E8D5E0 100%);
+    color: #8B5E83;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+    flex-shrink: 0;
+  }
+
+  .specialist-info-content {
+    flex: 1;
+  }
+
+  .specialist-info-label {
+    font-size: 0.75rem;
+    color: #8B7A8B;
+    font-weight: 500;
+    margin-bottom: 2px;
+  }
+
+  .specialist-info-value {
+    font-size: 0.95rem;
+    color: #4A3A4A;
+    font-weight: 500;
+  }
+
+  .specialist-card-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #F5E6F0;
+  }
+
+  .specialist-action-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border-radius: 12px;
+    border: 2px solid #F5E6F0;
+    background: white;
+    color: #4A3A4A;
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    min-height: 44px;
+  }
+
+  .specialist-action-btn:hover {
+    background: #F5E6F0;
+    border-color: #E8D5E0;
+    transform: translateY(-1px);
+  }
+
+  .specialist-action-btn.primary {
+    background: linear-gradient(135deg, #8B5E83 0%, #A67C52 100%);
+    color: white;
+    border-color: transparent;
+  }
+
+  .specialist-action-btn.primary:hover {
+    background: linear-gradient(135deg, #A67C52 0%, #8B5E83 100%);
+    color: white;
+  }
+
+  .specialist-action-btn.danger {
+    border-color: #FEE8E8;
+    color: #E84A4A;
+  }
+
+  .specialist-action-btn.danger:hover {
+    background: #FEE8E8;
+    color: #E84A4A;
+  }
+
+  @media (max-width: 768px) {
+    .specialists-desktop-table {
+      display: none !important;
+    }
+
+    .specialists-mobile-list {
+      display: block !important;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+
+{% include 'components/page_header.html' with title='Especialistas' subtitle='Personal del spa' add_url='specialists:create' add_label='Nueva especialista' %}
+
+<!-- Desktop Table View -->
+<div class="card specialists-desktop-table">
+  <div class="card-body p-0">
+    <div class="table-container">
+      <table class="table table-hover mb-0">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Teléfono</th>
+            <th>Email</th>
+            <th class="text-center">Principal</th>
+            <th class="text-center">Estado</th>
+            <th class="text-end">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for s in specialists %}
+            <tr>
+              <td class="fw-medium">{{ s.get_full_name }}</td>
+              <td>{{ s.phone|default:'—' }}</td>
+              <td>{{ s.email|default:'—' }}</td>
+              <td class="text-center">
+                {% if s.is_primary %}
+                  <span class="badge" style="background: #E8C35E; color: #5C4A00;">
+                    <i class="bi bi-star-fill me-1"></i>Principal
+                  </span>
+                {% endif %}
+              </td>
+              <td class="text-center">
+                {% if s.is_active %}
+                  <span class="badge bg-success-subtle text-success-emphasis">Activa</span>
+                {% else %}
+                  <span class="badge bg-secondary-subtle text-secondary-emphasis">Inactiva</span>
+                {% endif %}
+              </td>
+              <td class="text-end">
+                <div class="table-actions justify-content-end">
+                  <a href="{% url 'specialists:update' s.pk %}" class="action-icon" title="Editar"><i class="bi bi-pencil"></i></a>
+                  <a href="#" class="action-icon danger" title="Eliminar"
+                     data-confirm-delete="{% url 'specialists:delete' s.pk %}"
+                     data-message="¿Eliminar a <strong>{{ s.get_full_name }}</strong>?">
+                    <i class="bi bi-trash"></i>
+                  </a>
+                </div>
+              </td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="6">
+              <div class="empty-state">
+                <i class="bi bi-person-badge"></i>
+                <h5>No hay especialistas</h5>
+                <p>Registra al personal del spa.</p>
+                <a href="{% url 'specialists:create' %}" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Nueva especialista</a>
+              </div>
+            </td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Mobile Card View -->
+<div class="specialists-mobile-list">
+  {% for s in specialists %}
+    <div class="specialist-card">
+      <div class="specialist-card-header">
+        <h4 class="specialist-name">{{ s.get_full_name }}</h4>
+        <div class="specialist-badges">
+          {% if s.is_primary %}
+          <span class="specialist-badge primary">
+            <i class="bi bi-star-fill"></i>
+          </span>
+          {% endif %}
+          <span class="specialist-badge {% if s.is_active %}active{% else %}inactive{% endif %}">
+            {% if s.is_active %}Activa{% else %}Inactiva{% endif %}
+          </span>
+        </div>
+      </div>
+
+      <div class="specialist-card-body">
+        {% if s.phone %}
+        <div class="specialist-info-row">
+          <div class="specialist-info-icon">
+            <i class="bi bi-telephone"></i>
+          </div>
+          <div class="specialist-info-content">
+            <div class="specialist-info-label">Teléfono</div>
+            <div class="specialist-info-value">{{ s.phone }}</div>
+          </div>
+        </div>
+        {% endif %}
+
+        {% if s.email %}
+        <div class="specialist-info-row">
+          <div class="specialist-info-icon">
+            <i class="bi bi-envelope"></i>
+          </div>
+          <div class="specialist-info-content">
+            <div class="specialist-info-label">Email</div>
+            <div class="specialist-info-value">{{ s.email }}</div>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+
+      <div class="specialist-card-actions">
+        <a href="{% url 'specialists:update' s.pk %}" class="specialist-action-btn primary">
+          <i class="bi bi-pencil"></i>
+          Editar
+        </a>
+        <a href="#"
+           class="specialist-action-btn danger"
+           data-confirm-delete="{% url 'specialists:delete' s.pk %}"
+           data-message="¿Eliminar a <strong>{{ s.get_full_name }}</strong>?">
+          <i class="bi bi-trash"></i>
+          Eliminar
+        </a>
+      </div>
+    </div>
+  {% empty %}
+    <div class="card">
+      <div class="card-body text-center py-5">
+        <i class="bi bi-person-badge" style="font-size: 3rem; color: #E8D5E0; margin-bottom: 16px;"></i>
+        <h5 style="color: #4A3A4A; margin-bottom: 8px;">No hay especialistas</h5>
+        <p style="color: #8B7A8B; margin-bottom: 20px;">Registra al personal del spa.</p>
+        <a href="{% url 'specialists:create' %}" class="btn btn-primary">
+          <i class="bi bi-plus-lg me-1"></i>Nueva especialista
+        </a>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+
+{% include 'components/modal_confirm.html' %}
+{% endblock %}

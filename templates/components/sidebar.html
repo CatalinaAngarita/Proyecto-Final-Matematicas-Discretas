@@ -1,0 +1,107 @@
+{% load static core_tags %}
+<nav class="sidebar" id="sidebar">
+  <a href="{% url 'core:dashboard' %}" class="sidebar-brand">
+    <img src="{% static 'img/logo.png' %}" alt="Diana Nails" class="sidebar-logo">
+    <span class="brand-text">Diana Nails</span>
+  </a>
+
+  <div class="sidebar-nav">
+    <div class="sidebar-section-title">Navegación</div>
+
+    <a href="{% url 'core:dashboard' %}" class="sidebar-link" data-nav="dashboard">
+      <i class="bi bi-grid-1x2"></i>
+      <span class="nav-text">Dashboard</span>
+    </a>
+
+    <div class="sidebar-accordion">
+      <button class="sidebar-link sidebar-toggle-btn" data-collapse="gestion" aria-expanded="false">
+        <i class="bi bi-collection"></i>
+        <span class="nav-text">Gestión</span>
+        <i class="bi bi-chevron-down ms-auto collapse-icon"></i>
+      </button>
+      <div class="sidebar-collapse" id="collapse-gestion">
+        <a href="{% url 'appointments:list' %}" class="sidebar-link sidebar-sub-link" data-nav="appointments">
+          <i class="bi bi-calendar-check"></i>
+          <span class="nav-text">Citas</span>
+        </a>
+        <a href="{% url 'clients:list' %}" class="sidebar-link sidebar-sub-link" data-nav="clients">
+          <i class="bi bi-people"></i>
+          <span class="nav-text">Clientas</span>
+        </a>
+        <a href="{% url 'specialists:list' %}" class="sidebar-link sidebar-sub-link" data-nav="specialists">
+          <i class="bi bi-person-badge"></i>
+          <span class="nav-text">Especialistas</span>
+        </a>
+        <a href="{% url 'services:list' %}" class="sidebar-link sidebar-sub-link" data-nav="services">
+          <i class="bi bi-gear-wide-connected"></i>
+          <span class="nav-text">Servicios</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="sidebar-accordion">
+      <button class="sidebar-link sidebar-toggle-btn" data-collapse="horarios" aria-expanded="false">
+        <i class="bi bi-clock-history"></i>
+        <span class="nav-text">Horarios</span>
+        <i class="bi bi-chevron-down ms-auto collapse-icon"></i>
+      </button>
+      <div class="sidebar-collapse" id="collapse-horarios">
+        <a href="{% url 'schedules:work_list' %}" class="sidebar-link sidebar-sub-link" data-nav="work_schedule">
+          <i class="bi bi-calendar-range"></i>
+          <span class="nav-text">Horarios laborales</span>
+        </a>
+        <a href="{% url 'schedules:break_list' %}" class="sidebar-link sidebar-sub-link" data-nav="break_schedule">
+          <i class="bi bi-cup-hot"></i>
+          <span class="nav-text">Descansos</span>
+        </a>
+        <a href="{% url 'schedules:day_off_list' %}" class="sidebar-link sidebar-sub-link" data-nav="day_off">
+          <i class="bi bi-calendar-x"></i>
+          <span class="nav-text">Días libres</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="sidebar-accordion">
+      <button class="sidebar-link sidebar-toggle-btn" data-collapse="analiticas" aria-expanded="false">
+        <i class="bi bi-graph-up-arrow"></i>
+        <span class="nav-text">Analíticas</span>
+        <i class="bi bi-chevron-down ms-auto collapse-icon"></i>
+      </button>
+      <div class="sidebar-collapse" id="collapse-analiticas">
+        <a href="{% url 'analytics:dashboard' %}" class="sidebar-link sidebar-sub-link" data-nav="analytics">
+          <i class="bi bi-bar-chart"></i>
+          <span class="nav-text">Estadísticas de servicios</span>
+        </a>
+        <a href="{% url 'analytics:cancellation_stats' %}" class="sidebar-link sidebar-sub-link" data-nav="cancellations">
+          <i class="bi bi-graph-down-arrow"></i>
+          <span class="nav-text">Estadísticas de cancelación</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="sidebar-accordion">
+      <button class="sidebar-link sidebar-toggle-btn" data-collapse="auth" aria-expanded="false">
+        <i class="bi bi-shield-lock"></i>
+        <span class="nav-text">Autenticación</span>
+        <i class="bi bi-chevron-down ms-auto collapse-icon"></i>
+      </button>
+      <div class="sidebar-collapse" id="collapse-auth">
+        <a href="{% url 'admin:auth_group_changelist' %}" class="sidebar-link sidebar-sub-link" data-nav="groups">
+          <i class="bi bi-people-fill"></i>
+          <span class="nav-text">Grupos</span>
+        </a>
+        <a href="{% url 'admin:auth_user_changelist' %}" class="sidebar-link sidebar-sub-link" data-nav="users">
+          <i class="bi bi-person-check"></i>
+          <span class="nav-text">Usuarios</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="sidebar-footer">
+    <a href="{% url 'admin:index' %}" class="sidebar-link" target="_blank" data-nav="django-admin">
+      <i class="bi bi-shield-fill-check"></i>
+      <span class="nav-text">Admin Django</span>
+    </a>
+  </div>
+</nav>

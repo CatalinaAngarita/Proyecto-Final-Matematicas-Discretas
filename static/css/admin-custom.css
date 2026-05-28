@@ -1,0 +1,12 @@
+/* Custom styles for Django Admin */
+#header {
+  background-color: #212529;
+}
+
+.module caption {
+  background-color: #0d6efd;
+}
+
+div.breadcrumbs {
+  background-color: #343a40;
+}

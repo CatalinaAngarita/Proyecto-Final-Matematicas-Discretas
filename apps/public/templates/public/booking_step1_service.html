@@ -1,0 +1,205 @@
+{% extends 'public/base_public.html' %}
+{% load static %}
+
+{% block title %}Diana Nails — Agenda tu cita{% endblock %}
+
+{% block hero_section %}
+<section class="hero-section">
+  <img src="{% static 'img/logo.png' %}" alt="Diana Nails" class="hero-logo">
+  <h1>Diana Nails</h1>
+  <p class="tagline">
+    Bienestar y estilo para tus manos, cejas y más.<br>
+    Agenda tu cita en segundos.
+  </p>
+  <a href="#servicios" class="btn-scroll">
+    <i class="bi bi-calendar-check me-1"></i> Agendar cita
+  </a>
+</section>
+{% endblock %}
+
+{% block content %}
+<section id="servicios">
+  <div class="section-title">
+    <h2>Nuestros servicios</h2>
+    <p>Selecciona el servicio que deseas agendar</p>
+  </div>
+
+  <div class="booking-card">
+    {% if form.errors %}
+      <div class="alert alert-danger py-2 small mb-4">
+        <i class="bi bi-exclamation-triangle me-1"></i>
+        {% for field, errors in form.errors.items %}
+          {% for error in errors %}{{ error }}{% endfor %}
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <form method="post" id="serviceForm">
+      {% csrf_token %}
+      <input type="hidden" name="service" id="serviceInput" value="">
+
+      {# --- Category tabs --- #}
+      <div class="category-tabs mb-4" id="categoryTabs">
+        {% for cat_key, cat_data in grouped_services.items %}
+        <button type="button" class="category-tab category-tab-{{ cat_key }}{% if forloop.first %} active{% endif %}"
+                data-category="{{ cat_key }}">
+          <span class="tab-icon">
+            {% if cat_key == 'nail' %}<i class="bi bi-hand-index-thumb"></i>
+            {% elif cat_key == 'eyebrow' %}<i class="bi bi-eye"></i>
+            {% elif cat_key == 'lash' %}<i class="bi bi-brush"></i>
+            {% elif cat_key == 'waxing' %}<i class="bi bi-droplet"></i>
+            {% else %}<i class="bi bi-grid-3x3-gap"></i>{% endif %}
+          </span>
+          <span class="tab-label">{{ cat_data.label }}</span>
+        </button>
+        {% endfor %}
+      </div>
+
+      {# --- Service panels --- #}
+      {% for cat_key, cat_data in grouped_services.items %}
+      <div class="service-panel{% if forloop.first %} active{% endif %}" data-panel="{{ cat_key }}">
+        <div class="service-grid">
+          {% for service in cat_data.services %}
+          <div class="service-card" data-value="{{ service.id }}"
+               data-name="{{ service.name }}"
+               data-duration="{{ service.duration_minutes }}"
+               data-price="{{ service.price }}">
+            <div class="service-card-body">
+              <div class="service-card-icon">
+                {% if cat_key == 'nail' %}<i class="bi bi-hand-index-thumb"></i>
+                {% elif cat_key == 'eyebrow' %}<i class="bi bi-eye"></i>
+                {% elif cat_key == 'lash' %}<i class="bi bi-brush"></i>
+                {% elif cat_key == 'waxing' %}<i class="bi bi-droplet"></i>
+                {% else %}<i class="bi bi-star"></i>{% endif %}
+              </div>
+              <div class="service-card-info">
+                <div class="service-card-name">{{ service.name }}</div>
+                <div class="service-card-meta">
+                  <span class="meta-duration"><i class="bi bi-clock me-1"></i>{{ service.duration_minutes }} min</span>
+                  <span class="meta-divider">·</span>
+                  <span class="meta-price">${{ service.price|floatformat:0 }}</span>
+                </div>
+              </div>
+              <div class="service-card-check">
+                <i class="bi bi-check-circle-fill"></i>
+              </div>
+            </div>
+            {% if service.description %}
+            <div class="service-card-desc">{{ service.description|truncatechars:80 }}</div>
+            {% endif %}
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endfor %}
+
+      <button type="submit" class="btn btn-primary-custom w-100" id="continueBtn" disabled>
+        <span class="btn-label-default">Selecciona un servicio</span>
+        <span class="btn-label-ready d-none">Continuar <i class="bi bi-arrow-right ms-1"></i></span>
+      </button>
+    </form>
+  </div>
+</section>
+{% endblock %}
+
+{% block features_section %}
+<section class="features-section">
+  <div class="section-title">
+    <h2>¿Por qué elegirnos?</h2>
+    <p>Tu satisfacción es nuestra prioridad</p>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon"><i class="bi bi-star"></i></div>
+      <h6>Profesionales capacitadas</h6>
+      <p>Especialistas con amplia experiencia en belleza y cuidado personal.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon"><i class="bi bi-shield-check"></i></div>
+      <h6>Productos de calidad</h6>
+      <p>Trabajamos con marcas premium para garantizar los mejores resultados.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon"><i class="bi bi-house-heart"></i></div>
+      <h6>Ambiente acogedor</h6>
+      <p>Un espacio diseñado para que te sientas cómoda y relajada.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon"><i class="bi bi-clock-history"></i></div>
+      <h6>Resultados duraderos</h6>
+      <p>Técnicas avanzadas que garantizan un acabado impecable y prolongado.</p>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block testimonials_section %}
+{% if testimonials %}
+<section class="testimonials-section">
+  <div class="section-title">
+    <h2>Lo que dicen nuestras clientas</h2>
+    <p>Opiniones reales de quienes ya confiaron en nosotras</p>
+  </div>
+  <div class="testimonials-grid">
+    {% for testimonial in testimonials %}
+    <div class="testimonial-card">
+      <div class="testimonial-stars">
+        {% for i in "12345" %}
+          {% if forloop.counter <= testimonial.rating %}
+            <i class="bi bi-star-fill"></i>
+          {% else %}
+            <i class="bi bi-star"></i>
+          {% endif %}
+        {% endfor %}
+      </div>
+      <p class="testimonial-content">"{{ testimonial.content }}"</p>
+      <div class="testimonial-author">— {{ testimonial.client_name }}</div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  (function() {
+    const tabs = document.querySelectorAll('.category-tab');
+    const panels = document.querySelectorAll('.service-panel');
+    const cards = document.querySelectorAll('.service-card');
+    const input = document.getElementById('serviceInput');
+    const btn = document.getElementById('continueBtn');
+    const labelDefault = btn.querySelector('.btn-label-default');
+    const labelReady = btn.querySelector('.btn-label-ready');
+
+    // --- Category tab switching ---
+    tabs.forEach(function(tab) {
+      tab.addEventListener('click', function() {
+        const cat = this.dataset.category;
+        tabs.forEach(function(t) { t.classList.remove('active'); });
+        this.classList.add('active');
+        panels.forEach(function(p) {
+          p.classList.toggle('active', p.dataset.panel === cat);
+        });
+        cards.forEach(function(c) { c.classList.remove('selected'); });
+        input.value = '';
+        btn.disabled = true;
+        labelDefault.classList.remove('d-none');
+        labelReady.classList.add('d-none');
+      });
+    });
+
+    // --- Service card selection ---
+    cards.forEach(function(card) {
+      card.addEventListener('click', function() {
+        cards.forEach(function(c) { c.classList.remove('selected'); });
+        this.classList.add('selected');
+        input.value = this.dataset.value;
+        btn.disabled = false;
+        labelDefault.classList.add('d-none');
+        labelReady.classList.remove('d-none');
+      });
+    });
+  })();
+</script>
+{% endblock %}

@@ -1,0 +1,68 @@
+{% extends 'public/base_public.html' %}
+{% load static %}
+
+{% block title %}Cita confirmada — Diana Nails{% endblock %}
+
+{% block step_indicator %}
+<div class="step-indicator">
+  <div class="step-item">
+    <div class="step-number done">✓</div>
+    <span class="step-label done">Servicio</span>
+    <div class="step-connector done"></div>
+  </div>
+  <div class="step-item">
+    <div class="step-number done">✓</div>
+    <span class="step-label done">Horario</span>
+    <div class="step-connector done"></div>
+  </div>
+  <div class="step-item">
+    <div class="step-number done">✓</div>
+    <span class="step-label done">Confirmar</span>
+  </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="booking-card text-center">
+  <div class="success-icon">
+    <i class="bi bi-check-lg"></i>
+  </div>
+
+  <h4 class="fw-bold mb-2">¡Cita agendada!</h4>
+  <p class="text-muted mb-4">Te esperamos en Diana Nails</p>
+
+  <div class="summary-box text-start mb-4">
+    <div class="row g-3">
+      <div class="col-12">
+        <small class="text-muted d-block">Cliente</small>
+        <strong>{{ appointment.client.get_full_name }}</strong>
+      </div>
+      <div class="col-6">
+        <small class="text-muted d-block">Servicio</small>
+        <strong>{{ appointment.service.name }}</strong>
+      </div>
+      <div class="col-6">
+        <small class="text-muted d-block">Duración</small>
+        <strong>{{ appointment.service.duration_minutes }} min</strong>
+      </div>
+      <div class="col-6">
+        <small class="text-muted d-block">Fecha</small>
+        <strong>{{ appointment.date|date:'d/m/Y' }}</strong>
+      </div>
+      <div class="col-6">
+        <small class="text-muted d-block">Hora</small>
+        <strong>{{ appointment.start_time|time:'H:i' }}</strong>
+      </div>
+    </div>
+  </div>
+
+  <div class="alert alert-info py-3 small">
+    <i class="bi bi-whatsapp me-1"></i>
+    Te enviaremos un recordatorio por WhatsApp antes de tu cita.
+  </div>
+
+  <a href="{% url 'public:step1' %}" class="btn btn-primary-custom w-100 mt-2">
+    <i class="bi bi-plus-lg me-1"></i> Agendar otra cita
+  </a>
+</div>
+{% endblock %}

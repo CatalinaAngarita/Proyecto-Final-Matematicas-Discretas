@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Estadísticas — {{ system_name }}{% endblock %}
+{% block page_title %}Estadísticas{% endblock %}
+
+{% block content %}
+
+{% include 'components/page_header.html' with title='Panel de estadísticas' subtitle='Métricas clave del negocio' %}
+
+<div class="row g-3 mb-4">
+  <div class="col-md-4">
+    <div class="stat-card primary">
+      <div class="stat-icon"><i class="bi bi-bar-chart"></i></div>
+      <div class="stat-label">Cancelaciones</div>
+      <div class="stat-value">--%</div>
+      <div class="stat-change">Reportes diarios</div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="stat-card success">
+      <div class="stat-icon"><i class="bi bi-star"></i></div>
+      <div class="stat-label">Servicios populares</div>
+      <div class="stat-value">--</div>
+      <div class="stat-change">Top servicios del mes</div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="stat-card info">
+      <div class="stat-icon"><i class="bi bi-diagram-3"></i></div>
+      <div class="stat-label">Grafos</div>
+      <div class="stat-value">—</div>
+      <div class="stat-change">Próximamente</div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header"><i class="bi bi-x-circle me-2"></i>Cancelaciones</div>
+      <div class="card-body">
+        <a href="{% url 'analytics:cancellation_stats' %}" class="btn btn-outline-primary btn-sm">Ver reporte</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header"><i class="bi bi-bar-chart-line me-2"></i>Servicios</div>
+      <div class="card-body">
+        <a href="{% url 'analytics:service_stats' %}" class="btn btn-outline-primary btn-sm">Ver reporte</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

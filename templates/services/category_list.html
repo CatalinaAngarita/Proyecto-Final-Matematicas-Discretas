@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}Categorías de servicios{% endblock %}
+{% block page_title %}Categorías{% endblock %}
+{% block content %}
+{% include 'components/page_header.html' with title='Categorías de servicios' add_url='services:category_create' add_label='Nueva categoría' %}
+<div class="card">
+  <div class="card-body p-0">
+    <table class="table table-hover mb-0">
+      <thead><tr><th>Nombre</th><th>Descripción</th><th class="text-center">Activa</th></tr></thead>
+      <tbody>
+        {% for cat in categories %}
+          <tr>
+            <td class="fw-medium">{{ cat.name }}</td>
+            <td class="text-muted">{{ cat.description|default:'—' }}</td>
+            <td class="text-center">{% if cat.is_active %}<span class="badge bg-success-subtle text-success-emphasis">Sí</span>{% else %}<span class="badge bg-secondary-subtle text-secondary-emphasis">No</span>{% endif %}</td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="3"><div class="empty-state"><i class="bi bi-tags"></i><h5>Sin categorías</h5></div></td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}Días libres{% endblock %}
+{% block page_title %}Días libres{% endblock %}
+{% block content %}
+{% include 'components/page_header.html' with title='Días libres' subtitle='Fechas en que las especialistas no laboran' add_url='schedules:day_off_create' add_label='Nuevo día libre' %}
+<div class="card">
+  <div class="card-body p-0">
+    <div class="table-container">
+      <table class="table table-hover mb-0">
+        <thead><tr><th>Especialista</th><th>Fecha</th><th>Motivo</th></tr></thead>
+        <tbody>
+          {% for d in days_off %}
+            <tr><td class="fw-medium">{{ d.specialist.get_full_name }}</td><td>{{ d.date|date:'d/m/Y' }}</td><td class="text-muted">{{ d.reason|default:'—' }}</td></tr>
+          {% empty %}<tr><td colspan="3"><div class="empty-state"><i class="bi bi-calendar-x"></i><h5>Sin días libres</h5></div></td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

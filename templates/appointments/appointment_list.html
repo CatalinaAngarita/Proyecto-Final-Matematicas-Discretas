@@ -1,0 +1,336 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Citas — {{ system_name }}{% endblock %}
+{% block page_title %}Citas{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* Mobile-friendly cards for appointments */
+  .appointments-mobile-list {
+    display: none;
+  }
+
+  .appointment-card {
+    background: white;
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 12px rgba(153, 105, 152, 0.1);
+    border: 2px solid #f4e8f3;
+    transition: all 0.3s ease;
+  }
+
+  .appointment-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(153, 105, 152, 0.2);
+    border-color: #C9A3C9;
+  }
+
+  .appointment-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #f4e8f3;
+  }
+
+  .appointment-client-name {
+    font-weight: 600;
+    font-size: 1.05rem;
+    color: #1F2937;
+    margin: 0;
+  }
+
+  .appointment-status-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .appointment-status-badge.pending {
+    background: #f4e8f3;
+    color: #996998;
+  }
+
+  .appointment-status-badge.confirmed {
+    background: #D1FAE5;
+    color: #047857;
+  }
+
+  .appointment-status-badge.in_progress {
+    background: #FEF3C7;
+    color: #92400E;
+  }
+
+  .appointment-status-badge.completed {
+    background: #D1FAE5;
+    color: #047857;
+  }
+
+  .appointment-status-badge.cancelled {
+    background: #FEE2E2;
+    color: #DC2626;
+  }
+
+  .appointment-status-badge.no_show {
+    background: #FEE2E2;
+    color: #DC2626;
+  }
+
+  .appointment-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .appointment-info-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .appointment-info-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #f4e8f3 0%, #E6D0E6 100%);
+    color: #996998;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+    flex-shrink: 0;
+  }
+
+  .appointment-info-content {
+    flex: 1;
+  }
+
+  .appointment-info-label {
+    font-size: 0.75rem;
+    color: #6B7280;
+    font-weight: 500;
+    margin-bottom: 2px;
+  }
+
+  .appointment-info-value {
+    font-size: 0.95rem;
+    color: #1F2937;
+    font-weight: 500;
+  }
+
+  .appointment-card-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #f4e8f3;
+  }
+
+  .appointment-action-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border-radius: 12px;
+    border: 2px solid #f4e8f3;
+    background: white;
+    color: #1F2937;
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    min-height: 44px;
+  }
+
+  .appointment-action-btn:hover {
+    background: #f4e8f3;
+    border-color: #C9A3C9;
+    transform: translateY(-1px);
+  }
+
+  .appointment-action-btn.primary {
+    background: linear-gradient(135deg, #996998 0%, #7A4F79 100%);
+    color: white;
+    border-color: transparent;
+  }
+
+  .appointment-action-btn.primary:hover {
+    background: linear-gradient(135deg, #7A4F79 0%, #996998 100%);
+    color: white;
+  }
+
+  .appointment-action-btn.danger {
+    border-color: #FEE2E2;
+    color: #DC2626;
+  }
+
+  .appointment-action-btn.danger:hover {
+    background: #FEE2E2;
+    color: #DC2626;
+  }
+
+  @media (max-width: 768px) {
+    .appointments-desktop-table {
+      display: none !important;
+    }
+
+    .appointments-mobile-list {
+      display: block !important;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+
+{% include 'components/page_header.html' with title='Citas' subtitle='Todas las citas registradas' add_url='appointments:create' add_label='Nueva cita' %}
+
+<!-- Desktop Table View -->
+<div class="card appointments-desktop-table">
+  <div class="card-body p-0">
+    <div class="table-container">
+      <table class="table table-hover mb-0">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Clienta</th>
+            <th>Servicio</th>
+            <th>Especialista</th>
+            <th>Fecha</th>
+            <th>Horario</th>
+            <th class="text-center">Estado</th>
+            <th class="text-end">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for apt in appointments %}
+            <tr>
+              <td class="text-muted small">{{ apt.id|truncatechars:8 }}</td>
+              <td class="fw-medium">{{ apt.client.get_full_name }}</td>
+              <td>{{ apt.service.name }}</td>
+              <td>{{ apt.specialist.get_full_name }}</td>
+              <td>{{ apt.date|date:'d/m/Y' }}</td>
+              <td>{{ apt.start_time|time:'H:i' }} — {{ apt.end_time|time:'H:i' }}</td>
+              <td class="text-center">
+                <span class="badge status-{{ apt.status }}">{{ apt.get_status_display }}</span>
+              </td>
+              <td class="text-end">
+                <div class="table-actions justify-content-end">
+                  <a href="{% url 'appointments:detail' apt.pk %}" class="action-icon" title="Ver detalle"><i class="bi bi-eye"></i></a>
+                  <a href="{% url 'appointments:update' apt.pk %}" class="action-icon" title="Editar"><i class="bi bi-pencil"></i></a>
+                  <a href="{% url 'appointments:cancel' apt.pk %}" class="action-icon" title="Cancelar" style="color:#E8C35E;"><i class="bi bi-x-circle"></i></a>
+                </div>
+              </td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="8">
+                <div class="empty-state">
+                  <i class="bi bi-calendar-check"></i>
+                  <h5>No hay citas registradas</h5>
+                  <p>Agenda la primera cita del día.</p>
+                  <a href="{% url 'appointments:create' %}" class="btn btn-primary">
+                    <i class="bi bi-plus-lg me-1"></i>Nueva cita
+                  </a>
+                </div>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Mobile Card View -->
+<div class="appointments-mobile-list">
+  {% for apt in appointments %}
+    <div class="appointment-card">
+      <div class="appointment-card-header">
+        <h4 class="appointment-client-name">{{ apt.client.get_full_name }}</h4>
+        <span class="appointment-status-badge {{ apt.status }}">{{ apt.get_status_display }}</span>
+      </div>
+
+      <div class="appointment-card-body">
+        <div class="appointment-info-row">
+          <div class="appointment-info-icon">
+            <i class="bi bi-calendar-heart"></i>
+          </div>
+          <div class="appointment-info-content">
+            <div class="appointment-info-label">Fecha</div>
+            <div class="appointment-info-value">{{ apt.date|date:'d/m/Y' }}</div>
+          </div>
+        </div>
+
+        <div class="appointment-info-row">
+          <div class="appointment-info-icon">
+            <i class="bi bi-clock"></i>
+          </div>
+          <div class="appointment-info-content">
+            <div class="appointment-info-label">Horario</div>
+            <div class="appointment-info-value">{{ apt.start_time|time:'H:i' }} — {{ apt.end_time|time:'H:i' }}</div>
+          </div>
+        </div>
+
+        <div class="appointment-info-row">
+          <div class="appointment-info-icon">
+            <i class="bi bi-gem"></i>
+          </div>
+          <div class="appointment-info-content">
+            <div class="appointment-info-label">Servicio</div>
+            <div class="appointment-info-value">{{ apt.service.name }}</div>
+          </div>
+        </div>
+
+        <div class="appointment-info-row">
+          <div class="appointment-info-icon">
+            <i class="bi bi-person-badge"></i>
+          </div>
+          <div class="appointment-info-content">
+            <div class="appointment-info-label">Especialista</div>
+            <div class="appointment-info-value">{{ apt.specialist.get_full_name }}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="appointment-card-actions">
+        <a href="{% url 'appointments:detail' apt.pk %}" class="appointment-action-btn">
+          <i class="bi bi-eye"></i>
+          Ver
+        </a>
+        <a href="{% url 'appointments:update' apt.pk %}" class="appointment-action-btn primary">
+          <i class="bi bi-pencil"></i>
+          Editar
+        </a>
+        {% if apt.status != 'cancelled' and apt.status != 'completed' %}
+        <a href="{% url 'appointments:cancel' apt.pk %}" class="appointment-action-btn danger">
+          <i class="bi bi-x-circle"></i>
+          Cancelar
+        </a>
+        {% endif %}
+      </div>
+    </div>
+  {% empty %}
+    <div class="card">
+      <div class="card-body text-center py-5">
+        <i class="bi bi-calendar-check" style="font-size: 3rem; color: #E8D5E0; margin-bottom: 16px;"></i>
+        <h5 style="color: #4A3A4A; margin-bottom: 8px;">No hay citas registradas</h5>
+        <p style="color: #8B7A8B; margin-bottom: 20px;">Agenda la primera cita del día.</p>
+        <a href="{% url 'appointments:create' %}" class="btn btn-primary">
+          <i class="bi bi-plus-lg me-1"></i>Nueva cita
+        </a>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+
+{% include 'components/pagination.html' %}
+{% endblock %}

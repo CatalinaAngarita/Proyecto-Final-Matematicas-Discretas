@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}Eliminar horario{% endblock %}
+{% block page_title %}Eliminar horario{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-6">
+    <div class="card border-danger">
+      <div class="card-body text-center py-5">
+        <i class="bi bi-exclamation-triangle text-danger" style="font-size: 3rem;"></i>
+        <h4 class="mt-3 fw-semibold">¿Eliminar este horario?</h4>
+        <form method="post" class="mt-4">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger"><i class="bi bi-trash me-1"></i>Eliminar</button>
+          <a href="{% url 'schedules:work_list' %}" class="btn btn-light">Cancelar</a>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}Cancelaciones{% endblock %}
+{% block page_title %}Estadísticas de cancelación{% endblock %}
+{% block content %}
+<div class="card">
+  <div class="card-body p-0">
+    <div class="table-container">
+      <table class="table table-hover mb-0">
+        <thead><tr><th>Fecha</th><th>Total citas</th><th>Completadas</th><th>Canceladas</th><th>No asistió</th><th>Tasa</th></tr></thead>
+        <tbody>
+          {% for s in stats %}
+            <tr><td>{{ s.date|date:'d/m/Y' }}</td><td>{{ s.total_appointments }}</td><td>{{ s.completed_count }}</td><td>{{ s.cancelled_count }}</td><td>{{ s.no_show_count }}</td><td>{{ s.cancellation_rate }}%</td></tr>
+          {% empty %}<tr><td colspan="6"><div class="empty-state"><i class="bi bi-graph-down"></i><h5>Sin datos</h5></div></td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% include 'components/pagination.html' %}
+{% endblock %}

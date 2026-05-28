@@ -1,0 +1,317 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Horarios laborales — {{ system_name }}{% endblock %}
+{% block page_title %}Horarios laborales{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* Mobile-friendly cards for work schedules */
+  .schedules-mobile-list {
+    display: none;
+  }
+
+  .schedule-card {
+    background: white;
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 12px rgba(139, 94, 131, 0.08);
+    border: 2px solid #F5E6F0;
+    transition: all 0.3s ease;
+  }
+
+  .schedule-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(139, 94, 131, 0.15);
+    border-color: #E8D5E0;
+  }
+
+  .schedule-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #F5E6F0;
+  }
+
+  .schedule-specialist-name {
+    font-weight: 600;
+    font-size: 1.05rem;
+    color: #4A3A4A;
+    margin: 0;
+  }
+
+  .schedule-status-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .schedule-status-badge.active {
+    background: #E8F5E8;
+    color: #5A8B52;
+  }
+
+  .schedule-status-badge.inactive {
+    background: #F5E6F0;
+    color: #8B7A8B;
+  }
+
+  .schedule-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .schedule-info-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .schedule-info-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #F5E6F0 0%, #E8D5E0 100%);
+    color: #8B5E83;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+    flex-shrink: 0;
+  }
+
+  .schedule-info-content {
+    flex: 1;
+  }
+
+  .schedule-info-label {
+    font-size: 0.75rem;
+    color: #8B7A8B;
+    font-weight: 500;
+    margin-bottom: 2px;
+  }
+
+  .schedule-info-value {
+    font-size: 0.95rem;
+    color: #4A3A4A;
+    font-weight: 500;
+  }
+
+  .schedule-time-range {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    background: #F5E6F0;
+    color: #8B5E83;
+  }
+
+  .schedule-card-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #F5E6F0;
+  }
+
+  .schedule-action-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border-radius: 12px;
+    border: 2px solid #F5E6F0;
+    background: white;
+    color: #4A3A4A;
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    min-height: 44px;
+  }
+
+  .schedule-action-btn:hover {
+    background: #F5E6F0;
+    border-color: #E8D5E0;
+    transform: translateY(-1px);
+  }
+
+  .schedule-action-btn.primary {
+    background: linear-gradient(135deg, #8B5E83 0%, #A67C52 100%);
+    color: white;
+    border-color: transparent;
+  }
+
+  .schedule-action-btn.primary:hover {
+    background: linear-gradient(135deg, #A67C52 0%, #8B5E83 100%);
+    color: white;
+  }
+
+  .schedule-action-btn.danger {
+    border-color: #FEE8E8;
+    color: #E84A4A;
+  }
+
+  .schedule-action-btn.danger:hover {
+    background: #FEE8E8;
+    color: #E84A4A;
+  }
+
+  @media (max-width: 768px) {
+    .schedules-desktop-table {
+      display: none !important;
+    }
+
+    .schedules-mobile-list {
+      display: block !important;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+
+{% include 'components/page_header.html' with title='Horarios laborales' subtitle='Define los días y horas de trabajo de cada especialista' add_url='schedules:work_create' add_label='Nuevo horario' %}
+
+<!-- Desktop Table View -->
+<div class="card schedules-desktop-table">
+  <div class="card-body p-0">
+    <div class="table-container">
+      <table class="table table-hover mb-0">
+        <thead>
+          <tr>
+            <th>Especialista</th>
+            <th>Día</th>
+            <th>Mañana</th>
+            <th>Tarde</th>
+            <th class="text-center">Estado</th>
+            <th class="text-end">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for s in schedules %}
+            <tr>
+              <td class="fw-medium">{{ s.specialist.get_full_name }}</td>
+              <td>{{ s.get_day_of_week_display }}</td>
+              <td>{{ s.morning_start|time:'H:i' }} — {{ s.morning_end|time:'H:i' }}</td>
+              <td>{{ s.afternoon_start|time:'H:i' }} — {{ s.afternoon_end|time:'H:i' }}</td>
+              <td class="text-center">
+                {% if s.is_active %}
+                  <span class="badge bg-success-subtle text-success-emphasis">Activo</span>
+                {% else %}
+                  <span class="badge bg-secondary-subtle text-secondary-emphasis">Inactivo</span>
+                {% endif %}
+              </td>
+              <td class="text-end">
+                <div class="table-actions justify-content-end">
+                  <a href="{% url 'schedules:work_update' s.pk %}" class="action-icon" title="Editar"><i class="bi bi-pencil"></i></a>
+                  <a href="#" class="action-icon danger" title="Eliminar"
+                     data-confirm-delete="{% url 'schedules:work_delete' s.pk %}"
+                     data-message="¿Eliminar el horario de <strong>{{ s.specialist.get_full_name }}</strong> el {{ s.get_day_of_week_display }}?">
+                    <i class="bi bi-trash"></i>
+                  </a>
+                </div>
+              </td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="6">
+              <div class="empty-state">
+                <i class="bi bi-clock-history"></i>
+                <h5>Sin horarios definidos</h5>
+                <p>Configura los horarios laborales de las especialistas.</p>
+                <a href="{% url 'schedules:work_create' %}" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Nuevo horario</a>
+              </div>
+            </td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Mobile Card View -->
+<div class="schedules-mobile-list">
+  {% for s in schedules %}
+    <div class="schedule-card">
+      <div class="schedule-card-header">
+        <h4 class="schedule-specialist-name">{{ s.specialist.get_full_name }}</h4>
+        <span class="schedule-status-badge {% if s.is_active %}active{% else %}inactive{% endif %}">
+          {% if s.is_active %}Activo{% else %}Inactivo{% endif %}
+        </span>
+      </div>
+
+      <div class="schedule-card-body">
+        <div class="schedule-info-row">
+          <div class="schedule-info-icon">
+            <i class="bi bi-calendar-week"></i>
+          </div>
+          <div class="schedule-info-content">
+            <div class="schedule-info-label">Día</div>
+            <div class="schedule-info-value">{{ s.get_day_of_week_display }}</div>
+          </div>
+        </div>
+
+        <div class="schedule-info-row">
+          <div class="schedule-info-icon">
+            <i class="bi bi-sun"></i>
+          </div>
+          <div class="schedule-info-content">
+            <div class="schedule-info-label">Mañana</div>
+            <div class="schedule-info-value">
+              <span class="schedule-time-range">{{ s.morning_start|time:'H:i' }} — {{ s.morning_end|time:'H:i' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="schedule-info-row">
+          <div class="schedule-info-icon">
+            <i class="bi bi-moon"></i>
+          </div>
+          <div class="schedule-info-content">
+            <div class="schedule-info-label">Tarde</div>
+            <div class="schedule-info-value">
+              <span class="schedule-time-range">{{ s.afternoon_start|time:'H:i' }} — {{ s.afternoon_end|time:'H:i' }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="schedule-card-actions">
+        <a href="{% url 'schedules:work_update' s.pk %}" class="schedule-action-btn primary">
+          <i class="bi bi-pencil"></i>
+          Editar
+        </a>
+        <a href="#"
+           class="schedule-action-btn danger"
+           data-confirm-delete="{% url 'schedules:work_delete' s.pk %}"
+           data-message="¿Eliminar el horario de <strong>{{ s.specialist.get_full_name }}</strong> el {{ s.get_day_of_week_display }}?">
+          <i class="bi bi-trash"></i>
+          Eliminar
+        </a>
+      </div>
+    </div>
+  {% empty %}
+    <div class="card">
+      <div class="card-body text-center py-5">
+        <i class="bi bi-clock-history" style="font-size: 3rem; color: #E8D5E0; margin-bottom: 16px;"></i>
+        <h5 style="color: #4A3A4A; margin-bottom: 8px;">Sin horarios definidos</h5>
+        <p style="color: #8B7A8B; margin-bottom: 20px;">Configura los horarios laborales de las especialistas.</p>
+        <a href="{% url 'schedules:work_create' %}" class="btn btn-primary">
+          <i class="bi bi-plus-lg me-1"></i>Nuevo horario
+        </a>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+
+{% include 'components/modal_confirm.html' %}
+{% endblock %}
